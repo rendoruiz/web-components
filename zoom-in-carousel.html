@@ -67,9 +67,10 @@
 
   <script>
     const selectedItemFlag = 'selected'
+    const selectedItemStyle = 'scale(1.25)';
     let carouselList = document.querySelectorAll('.carousel > .carousel-item');
     let currentSelectedItem = document.querySelector(`.carousel-item.${selectedItemFlag}`);
-    const selectedItemStyle = 'scale(1.25)';
+    let transformMultiplier = null;
 
     // add class flag to selected item
     const setSelectedItem = (item) => {
@@ -79,8 +80,8 @@
     }
 
     // shift carousel items
-    const moveCarouselItems = (multiplier, carouselList) => {
-      multiplier -= 1;
+    const transformCarouselItems = (multiplier, carouselList, onResize = false) => {
+      multiplier -= !onResize ? 1 : 0;
       carouselList.forEach(item => {
         const itemWidth = item.offsetWidth;
         const translateXOperation = multiplier >= 0 
@@ -103,15 +104,28 @@
 
       if (selectedItem !== currentSelectedItem) {
         setSelectedItem(selectedItem);
-        moveCarouselItems(itemIndex, carouselList);
+        transformCarouselItems(itemIndex, carouselList);
+        
+        transformMultiplier = itemIndex - 1;
+        console.log(transformMultiplier);
       }
     });
+
+
 
     // initialize event listeners
     window.addEventListener('load', () => {
       [...carouselList].forEach((item) => {
         item.addEventListener('click', operateCarousel);
       });
+    });
+
+    window.addEventListener('resize', () => {
+      console.log('resizing');
+      if (transformMultiplier !== null) {
+        transformCarouselItems(transformMultiplier, carouselList, true);
+        console.log(transformMultiplier);
+      }
     });
   </script>
 </body>
