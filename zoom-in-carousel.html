@@ -80,8 +80,8 @@
     }
 
     // shift carousel items
-    const transformCarouselItems = (multiplier, carouselList, onResize = false) => {
-      multiplier -= !onResize ? 1 : 0;
+    const transformCarouselItems = (multiplier, carouselList) => {
+      multiplier -= 1;
       carouselList.forEach(item => {
         const itemWidth = item.offsetWidth;
         const translateXOperation = multiplier >= 0 
@@ -93,7 +93,6 @@
           transformStyle += ` ${selectedItemStyle}`;
         }
         item.style.transform = transformStyle;
-        // console.log(item.style.transform);
       })
     }
 
@@ -101,30 +100,25 @@
     const operateCarousel = (e => {
       const selectedItem = e.target;
       const itemIndex = [...carouselList].indexOf(selectedItem);
+      transformMultiplier = itemIndex;
 
       if (selectedItem !== currentSelectedItem) {
         setSelectedItem(selectedItem);
         transformCarouselItems(itemIndex, carouselList);
-        
-        transformMultiplier = itemIndex - 1;
-        console.log(transformMultiplier);
       }
     });
 
-
-
-    // initialize event listeners
+    // initialize click event listeners
     window.addEventListener('load', () => {
       [...carouselList].forEach((item) => {
         item.addEventListener('click', operateCarousel);
       });
     });
 
+    // adjust transform values on resize
     window.addEventListener('resize', () => {
-      console.log('resizing');
       if (transformMultiplier !== null) {
-        transformCarouselItems(transformMultiplier, carouselList, true);
-        console.log(transformMultiplier);
+        transformCarouselItems(transformMultiplier, carouselList);
       }
     });
   </script>
