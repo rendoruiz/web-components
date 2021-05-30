@@ -73,9 +73,9 @@
 
     // add class flag to selected item
     const setSelectedItem = (item) => {
-      document.querySelector('.carousel-item.selected')?.classList.remove('selected');
+      currentSelectedItem.classList.remove(selectedItemFlag);
       currentSelectedItem = item;
-      return item.classList.add('selected');
+      return item.classList.add(selectedItemFlag);
     }
 
     // shift carousel items
