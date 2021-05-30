@@ -27,10 +27,12 @@
     .carousel {
       --item-count: 5;
       --display-count: 3;
+      --container-width: 100%;
+      --item-width: calc(var(--container-width) / var(--display-count));
       justify-self: stretch;
       background: #555;
       display: grid;
-      grid-template-columns: repeat(var(--item-count), calc(100% / var(--display-count)));
+      grid-template-columns: repeat(var(--item-count), var(--item-width));
       grid-auto-flow: column;
 
     }
@@ -64,48 +66,50 @@
   </div>
 
   <script>
-    let currentSelectedItem = document.querySelector('.carousel-item.selected');
+    const selectedItemFlag = '.selected'
+    let carouselList = document.querySelectorAll('.carousel > .carousel-item');
+    let currentSelectedItem = document.querySelector(`.carousel-item${selectedItemFlag}`);
+    const selectedItemStyle = 'scale(1.25)';
 
-    const getItemWidth = () => {
-      return document.querySelector('.carousel-item').offsetWidth;
-    }
-
-    const setSelectedCarousel = (item) => {
+    //
+    const setSelectedItem = (item) => {
       document.querySelector('.carousel-item.selected')?.classList.remove('selected');
       currentSelectedItem = item;
       return item.classList.add('selected');
     }
 
+    // shift carousel items
     const moveCarouselItems = (multiplier, carouselList) => {
-      const itemWidth = getItemWidth();
       multiplier -= 1;
       carouselList.forEach(item => {
-        let isSelected = item.className.includes('selected');
+        const itemWidth = item.offsetWidth;
         if (multiplier >= 0) {
-          item.style.transform = `translateX(-${itemWidth * multiplier}px) ${!isSelected ? '' : 'scale(1.25)'}`;
+          item.style.transform = `translateX(-${itemWidth * multiplier}px)`;
         } else {
-          item.style.transform = `translateX(${itemWidth}px) ${!isSelected ? '' : 'scale(1.25)'}`;
+          item.style.transform = `translateX(${itemWidth}px)`;
         }
-        console.log(item.style.transform);
+        const isSelected = item.className.includes(selectedItemFlag);
+        if (isSelected) {
+          item.style.transform += ` ${selectedItemStyle}`;
+        }
+        // console.log(item.style.transform);
       })
     }
 
-    const carouselControl = (e => {
-      let selectedItem = e.target;
-      const carouselList = document.querySelectorAll('.carousel > .carousel-item');
+    // activates carousel transformations
+    const operateCarousel = (e => {
+      const selectedItem = e.target;
       const itemIndex = [...carouselList].indexOf(selectedItem);
 
       if (selectedItem !== currentSelectedItem) {
-        console.log(itemIndex);
-        setSelectedCarousel(selectedItem);
+        setSelectedItem(selectedItem);
         moveCarouselItems(itemIndex, carouselList);
-      } else {
-        console.log('same item');
       }
     });
 
-    [...document.querySelectorAll('.carousel > .carousel-item')].forEach((item) => {
-      item.addEventListener('click', carouselControl);
+    // initialize event listeners
+    [...carouselList].forEach((item) => {
+      item.addEventListener('click', operateCarousel);
     });
   </script>
 </body>
