@@ -90,7 +90,7 @@
         let transformStyle = `translateX(${translateXOperation}px)`;
 
         if (item.className.includes(selectedItemFlag)) {
-          transformStyle += ` ${selectedItemStyle}`;
+          transformStyle += ` ${selectedItemTransformStyle}`;
         }
         item.style.transform = transformStyle;
       })
