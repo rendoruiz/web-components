@@ -66,12 +66,12 @@
   </div>
 
   <script>
-    const selectedItemFlag = '.selected'
+    const selectedItemFlag = 'selected'
     let carouselList = document.querySelectorAll('.carousel > .carousel-item');
-    let currentSelectedItem = document.querySelector(`.carousel-item${selectedItemFlag}`);
+    let currentSelectedItem = document.querySelector(`.carousel-item.${selectedItemFlag}`);
     const selectedItemStyle = 'scale(1.25)';
 
-    //
+    // add class flag to selected item
     const setSelectedItem = (item) => {
       document.querySelector('.carousel-item.selected')?.classList.remove('selected');
       currentSelectedItem = item;
@@ -83,15 +83,15 @@
       multiplier -= 1;
       carouselList.forEach(item => {
         const itemWidth = item.offsetWidth;
-        if (multiplier >= 0) {
-          item.style.transform = `translateX(-${itemWidth * multiplier}px)`;
-        } else {
-          item.style.transform = `translateX(${itemWidth}px)`;
+        const translateXOperation = multiplier >= 0 
+          ? `-${itemWidth * multiplier}` 
+          : itemWidth;
+        let transformStyle = `translateX(${translateXOperation}px)`;
+
+        if (item.className.includes(selectedItemFlag)) {
+          transformStyle += ` ${selectedItemStyle}`;
         }
-        const isSelected = item.className.includes(selectedItemFlag);
-        if (isSelected) {
-          item.style.transform += ` ${selectedItemStyle}`;
-        }
+        item.style.transform = transformStyle;
         // console.log(item.style.transform);
       })
     }
@@ -108,8 +108,10 @@
     });
 
     // initialize event listeners
-    [...carouselList].forEach((item) => {
-      item.addEventListener('click', operateCarousel);
+    window.addEventListener('load', () => {
+      [...carouselList].forEach((item) => {
+        item.addEventListener('click', operateCarousel);
+      });
     });
   </script>
 </body>
