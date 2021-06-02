@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #333;
+      color: #eee;
+      font-family: sans-serif
+    }
+    body.menu-visible {
+      overflow: hidden;
+    }
+
+    header {
+      --bg: lightskyblue;
+      --primary: violet;
+      background-color: var(--bg);
+      display: grid;    
+      grid-auto-flow: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      overflow: hidden;
+    }
+    .branding {
+      height: 50px;
+      width: 50px;
+      background-color: var(--primary);
+      border-radius: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    
+    .menu-visible .main-nav {
+      display: block;
+      position: absolute;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .main-nav ul {
+      --transition-timing: 0.5s ease-in-out;
+      list-style: none;
+      position: fixed;
+      z-index: 1000000;
+      top: 0;
+      right: 0;
+      width: 80%;
+      height: 100%;
+      display: grid;
+      align-content: flex-start;
+      justify-items: start;
+      background-color: var(--bg);
+      transform: translateX(100%);
+      transition: box-shadow var(--transition-timing), transform var(--transition-timing);
+    }
+    .menu-visible .main-nav ul {
+      overflow-y: scroll;
+      transform: none;
+      box-shadow: 0 0 200px 100px rgb(30,30,30);
+    }
+    .main-nav a {
+      display: flex;
+      padding: 2vh 2vw;
+      justify-content: center;
+      color: inherit;
+      text-decoration: none;
+      
+    }
+    .nav-toggle {
+      font-size: 2rem;
+    }
+
+    @media screen and (min-width: 600px) {
+      .nav-toggle {
+        display: none;
+      }
+
+      .main-nav ul {
+        position: static;
+        transform: none;
+        grid-auto-flow: column;
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="branding">R</div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <span class="nav-toggle">🍔</span>
+  </header>
+  <main>
+    <section>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae quae assumenda quasi odio molestiae. Excepturi blanditiis quo magni sed ea unde assumenda, fugiat consequatur amet aliquid iure, officiis nulla neque? Veritatis blanditiis sequi voluptatem architecto tenetur amet quas delectus nemo possimus et similique, non eveniet id esse vitae modi maxime officia laboriosam voluptatum voluptates harum expedita odio quisquam distinctio? Minus sunt ratione ipsa, repellendus suscipit vero odit quasi facilis alias similique doloribus quam doloremque repellat eveniet rem rerum iusto quidem accusantium saepe assumenda reiciendis est? Iusto impedit laboriosam voluptates, accusantium vel similique! Dolore distinctio illum culpa quas impedit praesentium ex!</section>
+    <section>Nulla quibusdam enim delectus ullam beatae similique libero, at saepe tempore sequi expedita ab vitae quisquam, quos sint, nobis commodi ipsam dolor itaque laboriosam pariatur voluptatem repudiandae. Corporis hic pariatur, magnam incidunt accusamus nihil a eaque consectetur sapiente inventore, repellat sed tenetur, quia quae sint laboriosam esse eius non. Necessitatibus, ea doloribus accusantium omnis molestias nemo? Itaque molestiae, et quo cumque sit, labore autem quasi debitis error quis soluta repudiandae impedit. Aut inventore corrupti a blanditiis quasi ducimus impedit sequi, nihil distinctio, debitis pariatur sapiente unde! Consectetur ad laudantium in quas sunt aperiam voluptatibus deserunt distinctio doloribus eum, fuga aliquid.</section>
+    <section>Reprehenderit sed alias quibusdam repudiandae officia nulla incidunt autem delectus voluptate odit suscipit magnam cupiditate necessitatibus consequuntur, animi cum tenetur, unde quaerat? Quod ipsum quasi nulla natus, quaerat culpa rerum ut. Saepe adipisci alias ipsum tempora? Iure ab rem atque tempore dolore? Commodi, harum. Deleniti aliquid corporis quasi quae dicta dignissimos ratione beatae saepe illum obcaecati, magni expedita distinctio omnis, perferendis provident nulla natus veritatis ullam odio! Doloremque tempora non minima magnam laboriosam quam aut deleniti molestias quibusdam alias! Asperiores praesentium delectus dicta dignissimos error quia nisi mollitia, facilis omnis vel iusto, labore quidem fugit suscipit, impedit sed vero autem?</section>
+    <section>Cumque cupiditate nostrum laboriosam maiores nemo a eum, consectetur, aperiam veniam est maxime quae assumenda ratione perferendis eaque doloremque tempore fuga quibusdam porro magnam! Sapiente, quibusdam assumenda est dignissimos id sequi, rerum maxime laboriosam cumque distinctio ducimus ex placeat tempora aspernatur ut fugit maiores repellendus veniam quas iste officia quam! Sequi deserunt cupiditate maxime consequuntur. Qui dicta temporibus quas minus cupiditate similique iure est ullam, obcaecati dolore maiores quam impedit, iusto nesciunt tempore facere. Provident id libero incidunt veritatis odio corporis hic, officiis velit ipsa optio ullam. Quia illum, possimus explicabo quaerat, nulla ratione beatae autem sit nesciunt rerum inventore!</section>
+    <section>Asperiores excepturi in dignissimos corrupti dicta magnam facere quisquam odio quo cupiditate ab atque officia quis harum, officiis aliquid necessitatibus magni maxime tempore impedit reiciendis a! Laudantium blanditiis eos dolorem minima aut excepturi soluta quae in doloribus hic similique, veritatis commodi fuga quo modi nulla necessitatibus facere perspiciatis cumque officiis autem doloremque et vero impedit! Libero odio dolor modi nihil dolores mollitia a? Quibusdam fugiat magni nostrum consequatur, sit suscipit velit ex possimus laborum accusantium libero ipsa id corporis eum ab ducimus minima vero sequi. Et non consequuntur deleniti, esse quaerat voluptatum enim sint facilis odit asperiores, modi quis voluptas.</section>
+  </main>
+
+  <script>
+    const navToggledFlag = 'menu-visible';
+    const documentBody = document.querySelector('body');
+    const mainNav = document.querySelector('.main-nav');
+    const navToggle = document.querySelector('.nav-toggle');
+
+    const toggleNavigationMenu = (event) => {
+      if (documentBody.classList.contains(navToggledFlag)) {
+        documentBody.classList.remove(navToggledFlag);
+      } else {
+        documentBody.classList.add(navToggledFlag);
+      }
+    }
+    navToggle.addEventListener('click', toggleNavigationMenu);
+    mainNav.addEventListener('click', toggleNavigationMenu);
+  </script>
+</body>
+</html>
