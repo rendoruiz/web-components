@@ -35,6 +35,7 @@
       grid-template-columns: repeat(var(--item-count), var(--item-width));
       grid-auto-flow: column;
       overflow: clip visible;
+      justify-content: center;
     }
     .carousel-item {
       position: relative;
@@ -55,6 +56,13 @@
       background: #999;
       transform: scale(1.25);
     }
+
+    @media (max-width: 600px) {
+      .carousel {
+        --display-count: 1;
+        --item-width: 70%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -62,54 +70,61 @@
   <div class="container">
     <div class="carousel">
       <div class="carousel-item">1</div>
-      <div class="carousel-item selected">2</div>
-      <div class="carousel-item">3</div>
+      <div class="carousel-item">2</div>
+      <div class="carousel-item selected">3</div>
       <div class="carousel-item">4</div>
       <div class="carousel-item">5</div>
     </div>
   </div>
 
   <script>
-    const selectedItemFlag = 'selected'
+    const selectedItemFlag = 'selected';
     const selectedItemTransformStyle = 'scale(1.25)';
     let carouselList = document.querySelectorAll('.carousel > .carousel-item');
     let currentSelectedItem = document.querySelector(`.carousel-item.${selectedItemFlag}`);
-    let transformMultiplier = null;
-
-    // add class flag to selected item
-    const setSelectedItem = (item) => {
-      currentSelectedItem.classList.remove(selectedItemFlag);
-      currentSelectedItem = item;
-      return item.classList.add(selectedItemFlag);
-    }
+    let currentSelectedItemIndex = [...carouselList].indexOf(currentSelectedItem);
+    const initialIndex = currentSelectedItemIndex;
+    console.log(initialIndex)
 
     // shift carousel items
-    const transformCarouselItems = (multiplier, carouselList) => {
-      multiplier -= 1;
-      carouselList.forEach(item => {
-        const itemWidth = item.offsetWidth;
-        const translateXOperation = multiplier >= 0 
-          ? `-${itemWidth * multiplier}` 
-          : itemWidth;
+    const transformCarouselItems = (selectedItem, selectedIndex, carouselList) => {
+      // selectedIndex -= 1;
+      document.querySelector(`.carousel-item.${selectedItemFlag}`).classList.remove(selectedItemFlag);
+      selectedItem.classList.add(selectedItemFlag)
+
+
+      const itemWidth = currentSelectedItem.offsetWidth;
+      console.log(`init: ${initialIndex} | sel: ${selectedIndex}`)
+      const translateXOperation = selectedIndex < initialIndex
+        ? itemWidth * (initialIndex - selectedIndex)
+        : itemWidth * ((selectedIndex - initialIndex) * -1);
+  
+
+      carouselList.forEach((item, index) => {
+        // console.log(`s: ${selectedIndex} | i: ${index}`)
         let transformStyle = `translateX(${translateXOperation}px)`;
+        console.log(transformStyle);
 
         if (item.className.includes(selectedItemFlag)) {
           transformStyle += ` ${selectedItemTransformStyle}`;
         }
         item.style.transform = transformStyle;
       })
+
+      currentSelectedItemIndex = selectedIndex;
+      return
     }
 
     // activates carousel transformations
     const operateCarousel = (e => {
       const selectedItem = e.target;
       const itemIndex = [...carouselList].indexOf(selectedItem);
-      transformMultiplier = itemIndex;
 
-      if (selectedItem !== currentSelectedItem) {
-        setSelectedItem(selectedItem);
-        transformCarouselItems(itemIndex, carouselList);
-      }
+      // console.log(itemIndex)
+      console.log(`prev: ${currentSelectedItemIndex} | c: ${itemIndex}`);
+      // if (selectedItem !== currentSelectedItem) {
+        transformCarouselItems(selectedItem, itemIndex, carouselList);
+      // }
     });
 
     // initialize click event listeners
