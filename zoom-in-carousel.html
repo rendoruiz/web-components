@@ -82,49 +82,34 @@
     const selectedItemTransformStyle = 'scale(1.25)';
     let carouselList = document.querySelectorAll('.carousel > .carousel-item');
     let currentSelectedItem = document.querySelector(`.carousel-item.${selectedItemFlag}`);
-    let currentSelectedItemIndex = [...carouselList].indexOf(currentSelectedItem);
-    const initialIndex = currentSelectedItemIndex;
-    console.log(initialIndex)
+    const initialIndex = [...carouselList].indexOf(currentSelectedItem);
+    // console.log(initialIndex)
 
     // shift carousel items
-    const transformCarouselItems = (selectedItem, selectedIndex, carouselList) => {
-      // selectedIndex -= 1;
-      document.querySelector(`.carousel-item.${selectedItemFlag}`).classList.remove(selectedItemFlag);
+    const transformCarouselItems = (selectedItem, carouselList) => {
+      const selectedIndex = [...carouselList].indexOf(selectedItem);
+      currentSelectedItem.classList.remove(selectedItemFlag);
       selectedItem.classList.add(selectedItemFlag)
 
+      // console.log(`init: ${initialIndex} | sele: ${selectedIndex}`);
 
       const itemWidth = currentSelectedItem.offsetWidth;
-      console.log(`init: ${initialIndex} | sel: ${selectedIndex}`)
-      const translateXOperation = selectedIndex < initialIndex
-        ? itemWidth * (initialIndex - selectedIndex)
-        : itemWidth * ((selectedIndex - initialIndex) * -1);
+      let translateXOperation = itemWidth * (initialIndex - selectedIndex);
+      // console.log(translateXOperation);
   
-
       carouselList.forEach((item, index) => {
-        // console.log(`s: ${selectedIndex} | i: ${index}`)
-        let transformStyle = `translateX(${translateXOperation}px)`;
-        console.log(transformStyle);
-
-        if (item.className.includes(selectedItemFlag)) {
-          transformStyle += ` ${selectedItemTransformStyle}`;
-        }
-        item.style.transform = transformStyle;
+        item.style.transform = `translateX(${translateXOperation}px)`;
       })
 
-      currentSelectedItemIndex = selectedIndex;
-      return
+      selectedItem.style.transform += ` ${selectedItemTransformStyle}`;
     }
 
     // activates carousel transformations
     const operateCarousel = (e => {
       const selectedItem = e.target;
-      const itemIndex = [...carouselList].indexOf(selectedItem);
 
-      // console.log(itemIndex)
-      console.log(`prev: ${currentSelectedItemIndex} | c: ${itemIndex}`);
-      // if (selectedItem !== currentSelectedItem) {
-        transformCarouselItems(selectedItem, itemIndex, carouselList);
-      // }
+      transformCarouselItems(selectedItem, carouselList);
+      currentSelectedItem = selectedItem;
     });
 
     // initialize click event listeners
@@ -136,9 +121,7 @@
 
     // adjust transform values on resize
     window.addEventListener('resize', () => {
-      if (transformMultiplier !== null) {
-        transformCarouselItems(transformMultiplier, carouselList);
-      }
+        transformCarouselItems(currentSelectedItem, carouselList);
     });
   </script>
 </body>
