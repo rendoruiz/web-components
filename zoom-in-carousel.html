@@ -44,7 +44,7 @@
       padding: 10vh 0;
       background: #666;
       cursor: pointer;
-      transition: transform 0.3s ease-out;
+      transition: all 0.3s ease-out;
     }
     .carousel-item * {
       user-select: none;
@@ -94,7 +94,7 @@
       // console.log(`init: ${initialIndex} | sele: ${selectedIndex}`);
 
       const itemWidth = currentSelectedItem.offsetWidth;
-      let translateXOperation = itemWidth * (initialIndex - selectedIndex);
+      const translateXOperation = itemWidth * (initialIndex - selectedIndex);
       // console.log(translateXOperation);
   
       carouselList.forEach((item, index) => {
