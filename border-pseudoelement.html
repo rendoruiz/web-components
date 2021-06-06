@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    :root {
+      --border-gap: -20px;
+      --border-width: 2px;
+    }
+    body {
+      height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+    .container {
+      display: grid;
+      grid-auto-flow: column;
+      gap: calc((var(--border-gap) * 2 * -1) - var(--border-width));
+    }
+    .object {
+      display: grid;
+      width: 300px;
+      height: 200px;
+      background: #ccc;
+      padding: 2rem;
+      position: relative;
+      z-index: 1000;
+    }
+    .object::before {
+      content: ' ';
+      position: absolute;
+      /* background: blue; */
+      top: var(--border-gap);
+      right: var(--border-gap);
+      width: 20%;
+      height: 30%;
+      border: var(--border-width) solid black;
+      border-left: none;
+      border-bottom: none;
+    }    
+    .object::after {
+      content: ' ';
+      position: absolute;
+      /* background: blue; */
+      left: var(--border-gap);
+      bottom: var(--border-gap);
+      width: 20%;
+      height: 30%;
+      border: var(--border-width) solid black;
+      border-right: none;
+      border-top: none;
+    }
+    .obj2::after {
+      height: 90%;
+    }
+    .obj2 {
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="object">
+      <h1>about</h1>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et sint deleniti atque eius rerum tempore quidem facilis, accusamus consequuntur, minus libero nam exercitationem doloremque, quas adipisci non ut repellendus maxime.</p>
+    </div>
+    <div class="object obj2">
+      <h1>about</h1>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et sint deleniti atque eius rerum tempore quidem facilis, accusamus consequuntur, minus libero nam exercitationem doloremque, quas adipisci non ut repellendus maxime.</p>
+    </div>
+  </div>
+</body>
+</html>
