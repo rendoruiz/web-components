@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      height: 100vh;
+      background: orange;
+      display: grid;
+      place-items: center;
+      text-transform: uppercase;
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 2rem;
+      letter-spacing: 3px;
+    }
+    .box {
+      width: max(400px, 50vw);
+      height: max(400px, 70vh);
+      display: grid;
+      place-items: center;
+      
+      --frame-border-color: black;
+      --frame-border-width: 2px;
+      --frame-border-size-x: 20%;
+      --frame-border-size-y: 20%;
+      
+      /* top, right, bottom, left */
+      background: 
+        no-repeat top right / var(--frame-border-size-x) var(--frame-border-width) linear-gradient(to bottom, var(--frame-border-color) var(--frame-border-width), rgba(0,0,0,0) 1px),
+        no-repeat top right / var(--frame-border-width) var(--frame-border-size-y) linear-gradient(to left, var(--frame-border-color) var(--frame-border-width), rgba(0,0,0,0) 1px),
+        no-repeat bottom left / var(--frame-border-size-x) var(--frame-border-width) linear-gradient(to top, var(--frame-border-color) var(--frame-border-width), rgba(0,0,0,0) 1px),
+        no-repeat bottom left / var(--frame-border-width) var(--frame-border-size-y) linear-gradient(to right, var(--frame-border-color) var(--frame-border-width), rgba(0,0,0,0) 1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span>corner lines</span>
+  </div>
+</body>
+</html>
