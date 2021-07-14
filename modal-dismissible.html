@@ -92,8 +92,9 @@
 
 
     #modal-object {
-      width: min(600px, 80vw);
-      height: min(400px, 80vh);
+      border-radius: 10px;
+      height: max(300px, 80%);
+      width: max(200px, 80%);
       background: cyan;
       display: none;
       animation-duration: 0.5s;
@@ -102,7 +103,8 @@
 
     body.modal-init #modal-object {
       display: grid;
-      place-items: center;
+      align-content: center;
+      justify-items: center;
     }
     body.modal-close #modal-object {
       animation-name: modal-object-close;
