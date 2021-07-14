@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    body{
+      padding-top: 30px;
+      padding-bottom: 30px;
+      display: grid;
+      place-items: center;
+      height: 100vh;
+      background: orange;
+      color: white;
+      letter-spacing: 4px;
+      font-family: sans-serif;
+      text-transform: uppercase;
+      font-size: 2rem;
+      position: relative;
+    }
+
+    .box {
+      padding: 5px 20px;
+      color: orange;
+      background: white;
+    }
+
+    .modal {
+      position: absolute;
+      width: min(600px, 80vw);
+      height: min(400px, 80vh);
+      background: cyan;
+      display: none;
+      animation-duration: 0.5s;
+      animation-fill-mode: both;
+    }
+
+    .modal.init {
+      display: grid;
+      place-items: center;
+    }
+    .modal.close {
+      animation-name: modal-close;
+      pointer-events: none;
+    }
+    .modal.open {
+      animation-name: modal-open;
+      pointer-events: all;
+    }
+
+    @keyframes modal-close {
+      from {
+        z-index: 1000;
+        transform: none;
+        opacity: 1;
+      }
+      75% {
+        transform: scale(1.2);
+      }
+      90% {
+        opacity: 0;
+      }
+      to {
+        z-index: -1000;
+        transform: none;
+        opacity: 0;
+      }
+    }
+
+    @keyframes modal-open {
+      from {
+        z-index: -1000;
+        transform: scale(1.2);
+        opacity: 0;
+      }
+      to {
+        z-index: 1000;
+        transform: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span id="success-open" class="btn">open modal</span>
+  </div>
+
+  <div class="modal">
+    <span id="success-close" class="btn">close modal</span>
+  </div>
+
+  <script>
+    const modal = document.querySelector('.modal');
+    
+    document.getElementById('success-open').addEventListener('click', (e) => {
+      modal.classList.remove('close');
+      modal.classList.add('open', 'init');
+      console.log('open');
+    });
+
+    document.getElementById('success-close').addEventListener('click', (e) => {
+      modal.classList.replace('open', 'close');
+      console.log('close');
+    });
+  </script>
+</body>
+</html>
