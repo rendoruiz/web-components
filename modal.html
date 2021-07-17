@@ -4,56 +4,119 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Modal</title>
 
   <style>
+    
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body{
-      padding-top: 30px;
-      padding-bottom: 30px;
+      height: 150vh;
       display: grid;
       place-items: center;
-      height: 100vh;
       background: orange;
-      color: white;
+      user-select: none;
+    }
+
+    .box {
+      color: orange;
+    }
+
+    span {
+      background: white;
+      padding: 5px 20px;
       letter-spacing: 4px;
       font-family: sans-serif;
       text-transform: uppercase;
       font-size: 2rem;
-      position: relative;
     }
 
-    .box {
-      padding: 5px 20px;
-      color: orange;
-      background: white;
+
+    body.modal-open  {
+      overflow: hidden;
     }
 
-    .modal {
-      position: absolute;
-      width: min(600px, 80vw);
-      height: min(400px, 80vh);
+    #modal-container {
+      position: fixed;
+      z-index: -10000;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(30, 30, 30, 0.7);
+      opacity: 0;
+      animation-duration: 0.5s;
+      animation-fill-mode: both;
+    }
+
+    body.modal-open #modal-container {
+      opacity: 1;
+      z-index: 10000;
+      animation-name: modal-container-open;
+    }
+
+    body.modal-close #modal-container {
+      opacity: 0;
+      z-index: -10000;
+      animation-name: modal-container-close;
+    }
+
+    @keyframes modal-container-open {
+      from {
+        z-index: -10000;
+        opacity: 0;
+      }
+      to {
+        z-index: 10000;
+        opacity: 1;
+      }
+    }
+
+    @keyframes modal-container-close {
+      from {
+        z-index: 10000;
+        opacity: 1;
+      }
+      to {
+        z-index: -10000;
+        opacity: 0;
+      }
+    }
+
+
+
+    #modal-object {
+      border-radius: 10px;
+      height: max(300px, 80%);
+      width: max(200px, 80%);
       background: cyan;
       display: none;
       animation-duration: 0.5s;
       animation-fill-mode: both;
     }
 
-    .modal.init {
+    body.modal-init #modal-object {
       display: grid;
-      place-items: center;
+      align-content: center;
+      justify-items: center;
     }
-    .modal.close {
-      animation-name: modal-close;
+    body.modal-close #modal-object {
+      animation-name: modal-object-close;
       pointer-events: none;
     }
-    .modal.open {
-      animation-name: modal-open;
+    body.modal-open #modal-object {
+      animation-name: modal-object-open;
       pointer-events: all;
     }
 
-    @keyframes modal-close {
+    @keyframes modal-object-close {
       from {
-        z-index: 1000;
         transform: none;
         opacity: 1;
       }
@@ -64,20 +127,16 @@
         opacity: 0;
       }
       to {
-        z-index: -1000;
         transform: none;
-        opacity: 0;
       }
     }
 
-    @keyframes modal-open {
+    @keyframes modal-object-open {
       from {
-        z-index: -1000;
         transform: scale(1.2);
         opacity: 0;
       }
       to {
-        z-index: 1000;
         transform: none;
         opacity: 1;
       }
@@ -85,27 +144,45 @@
   </style>
 </head>
 <body>
+
   <div class="box">
     <span id="success-open" class="btn">open modal</span>
   </div>
 
-  <div class="modal">
-    <span id="success-close" class="btn">close modal</span>
+  <div id="modal-container">
+    <div id="modal-object">
+      <span id="success-close" class="btn">close modal</span>
+    </div>
   </div>
 
   <script>
-    const modal = document.querySelector('.modal');
-    
-    document.getElementById('success-open').addEventListener('click', (e) => {
-      modal.classList.remove('close');
-      modal.classList.add('open', 'init');
+    const body = document.querySelector('body');
+    const modalActivator = document.getElementById('success-open');
+    const modalDeactivator = document.getElementById('success-close');
+    const modalContainer = document.getElementById('modal-container');
+    const modalObject = document.getElementById('modal-object');
+
+    modalActivator.addEventListener('click', (e) => {
+      e.stopPropagation();
+      body.classList.remove('modal-close');
+      body.classList.add('modal-open', 'modal-init');
       console.log('open');
     });
 
-    document.getElementById('success-close').addEventListener('click', (e) => {
-      modal.classList.replace('open', 'close');
+    modalDeactivator.addEventListener('click', (e) => {
+      e.stopPropagation();
+      body.classList.replace('modal-open', 'modal-close');
       console.log('close');
     });
+
+    modalContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (e.target === modalContainer) {
+        body.classList.replace('modal-open', 'modal-close');
+        console.log('container close');
+      }
+    });
+
   </script>
 </body>
 </html>
