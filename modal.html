@@ -15,32 +15,43 @@
     }
 
     body{
-      height: 150vh;
+      height: 120vh;
       display: grid;
       place-items: center;
       background: orange;
       user-select: none;
+
     }
 
     .box {
-      color: orange;
+      display: grid;
+      gap: 5vh;
+      place-items: center;
     }
 
-    span {
+    .btn {
       background: white;
       padding: 5px 20px;
       letter-spacing: 4px;
       font-family: sans-serif;
       text-transform: uppercase;
       font-size: 2rem;
+      border: none;
+      border-radius: 0;
+    }
+    .box .btn {
+      color: orange;
     }
 
 
-    body.modal-open  {
+
+    body[data-modal-status="open"] {
       overflow: hidden;
     }
 
-    #modal-container {
+    .modal-group {
+      --modal-group-smoke-color: rgba(30, 30, 30, 0.7);
+
       position: fixed;
       z-index: -10000;
       top: 0;
@@ -49,25 +60,25 @@
       left: 0;
       display: grid;
       place-items: center;
-      background: rgba(30, 30, 30, 0.7);
+      background: var(--modal-group-smoke-color);
       opacity: 0;
       animation-duration: 0.5s;
       animation-fill-mode: both;
     }
 
-    body.modal-open #modal-container {
+    body[data-modal-status="open"] .modal-group {
       opacity: 1;
       z-index: 10000;
-      animation-name: modal-container-open;
+      animation-name: modal-group-open;
     }
 
-    body.modal-close #modal-container {
+    body[data-modal-status="close"] .modal-group {
       opacity: 0;
       z-index: -10000;
-      animation-name: modal-container-close;
+      animation-name: modal-group-close;
     }
 
-    @keyframes modal-container-open {
+    @keyframes modal-group-open {
       from {
         z-index: -10000;
         opacity: 0;
@@ -77,8 +88,7 @@
         opacity: 1;
       }
     }
-
-    @keyframes modal-container-close {
+    @keyframes modal-group-close {
       from {
         z-index: 10000;
         opacity: 1;
@@ -91,30 +101,40 @@
 
 
 
-    #modal-object {
-      border-radius: 10px;
+    .modal-item {
+      max-width: 95%;
+      max-height: 95%;
       height: max(300px, 80%);
       width: max(200px, 80%);
       background: cyan;
-      display: none;
+      border-radius: 10px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
       animation-duration: 0.5s;
       animation-fill-mode: both;
     }
 
-    body.modal-init #modal-object {
-      display: grid;
-      align-content: center;
-      justify-items: center;
-    }
-    body.modal-close #modal-object {
-      animation-name: modal-object-close;
-      pointer-events: none;
-    }
-    body.modal-open #modal-object {
+
+    body[data-modal-status="open"] .modal-item[data-modal-status="open"] {
       animation-name: modal-object-open;
       pointer-events: all;
     }
+    body[data-modal-status="close"] .modal-item[data-modal-status="close"] {
+      animation-name: modal-object-close;
+      pointer-events: none;
+    }
 
+    @keyframes modal-object-open {
+      from {
+        transform: scale(1.2);
+        opacity: 0;
+      }
+      to {
+        transform: none;
+        opacity: 1;
+      }
+    }
     @keyframes modal-object-close {
       from {
         transform: none;
@@ -131,58 +151,92 @@
       }
     }
 
-    @keyframes modal-object-open {
-      from {
-        transform: scale(1.2);
-        opacity: 0;
-      }
-      to {
-        transform: none;
-        opacity: 1;
-      }
-    }
   </style>
 </head>
 <body>
 
   <div class="box">
-    <span id="success-open" class="btn">open modal</span>
+    <span class="btn" data-modal-open="contact-success">open modal span</span>
+    <button class="btn" data-modal-open="contact-success">open modal button</button>
   </div>
 
-  <div id="modal-container">
-    <div id="modal-object">
-      <span id="success-close" class="btn">close modal</span>
+  <div class="modal-group">
+    <div class="modal-item" data-modal-id="contact-success">
+      <span class="btn" data-modal-close="contact-success">close modal</span>
     </div>
   </div>
 
   <script>
-    const body = document.querySelector('body');
-    const modalActivator = document.getElementById('success-open');
-    const modalDeactivator = document.getElementById('success-close');
-    const modalContainer = document.getElementById('modal-container');
-    const modalObject = document.getElementById('modal-object');
+    // custom log.message()
+    const logMessage = (message, isError = true) => {
+      const consoleHeader = isError === true
+        ? 'Modal Error:'
+        : 'Modal:';
+      console.log(consoleHeader, message);
+    }
 
-    modalActivator.addEventListener('click', (e) => {
-      e.stopPropagation();
-      body.classList.remove('modal-close');
-      body.classList.add('modal-open', 'modal-init');
-      console.log('open');
-    });
+    const body = document.body;
+    const modalGroup = document.querySelector('.modal-group');
+    const modalItems = [...modalGroup.children].filter(item => item.classList.contains('modal-item') && item.dataset.modalId);
+    if (!modalGroup) {
+      logMessage('no element with [ modal-group ] class found.')
+    }
+    else if (!modalItems || modalItems.length === 0) {
+      logMessage('no element with [ modal-item ] class found inside "modal-group".');
+    }
+    else {
+      const modalStatusIndicator = 'data-modal-status';
 
-    modalDeactivator.addEventListener('click', (e) => {
-      e.stopPropagation();
-      body.classList.replace('modal-open', 'modal-close');
-      console.log('close');
-    });
+      modalItems.forEach(item => {
+        const modalId = item.dataset.modalId;
+        const itemActivators = document.querySelectorAll(`*[data-modal-open="${modalId}"]`);
+        const itemDeactivators = document.querySelectorAll(`*[data-modal-close="${modalId}"]`);
+        
+        if (!itemActivators || itemActivators.length === 0) {
+          logMessage(`no element with [ data-modal-open="${modalId}" ] found.`)
+        }
+        else if (!itemDeactivators || itemDeactivators.length === 0) {
+          logMessage(`no element with [ data-modal-close="${modalId}" ] found.`)
+        }
+        else {
+          itemActivators.forEach(activator => {
+            activator.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              body.setAttribute(modalStatusIndicator, 'open');
+              item.setAttribute(modalStatusIndicator, 'open');
 
-    modalContainer.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (e.target === modalContainer) {
-        body.classList.replace('modal-open', 'modal-close');
-        console.log('container close');
-      }
-    });
+              logMessage(`[ ${item.dataset.modalId} ] modal opened by an activator`, false);
+            });
+          });
 
+          itemDeactivators.forEach(deactivator => {
+            deactivator.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              body.setAttribute(modalStatusIndicator, 'close');
+              item.setAttribute(modalStatusIndicator, 'close');
+
+              logMessage(`[ ${item.dataset.modalId} ] modal opened by an deactivator`, false);
+            });
+          });
+        }
+      });
+
+      // deactivate open model-item whenever modal-group is clicked
+      modalGroup.addEventListener('click', (e) => {
+        if (e.target === modalGroup &&
+          body.dataset.modalStatus === 'open') {
+          const activeModal = document.querySelector(`.modal-item[${modalStatusIndicator}="open"]`);
+          if (activeModal) {
+            body.setAttribute(modalStatusIndicator, 'close');
+            activeModal.setAttribute(modalStatusIndicator, 'close');
+
+            logMessage(`[ ${activeModal.dataset.modalId} ] modal closed by group`, false);
+          }
+        }
+      })
+    }
   </script>
 </body>
 </html>
