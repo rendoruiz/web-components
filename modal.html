@@ -238,14 +238,20 @@
 
   <script>
     // custom log.message()
-    const showLogMessages = false;
-    const logMessage = (message, isError = true) => {
-      
-      const consoleHeader = isError === true
-        ? 'Modal Error:'
-        : 'Modal:';
-      if (showLogMessages) {
-        console.log(consoleHeader, message);
+    const enableLogMessages = true;
+    const logMessages = (messages, isError = true) => {
+      if (enableLogMessages) {
+        if (!Array.isArray(messages)) {
+          messages = [messages]
+        }
+        messages.forEach(message => {
+          if (isError) {
+            console.error('Modal Error:', message);
+          }
+          else {
+            console.log('Modal:', message);
+          }
+        });
       }
     }
 
@@ -255,11 +261,15 @@
     const modalItems = [...modalGroup.children].filter(item => item.classList.contains('modal-item') && item.hasAttribute(modalIdAttribute));
 
     // check if modal-group and modal-item children exists
+    let errorList = [];
     if (!modalGroup) {
-      logMessage('no element with [modal-group] class found.')
+      errorList.push('no element with [modal-group] class found.');
     }
-    else if (!modalItems || modalItems.length === 0) {
-      logMessage('no element with [modal-item] class found inside "modal-group".');
+    if (!modalItems || modalItems.length === 0) {
+      errorList.push('no element with [modal-item] class found inside "modal-group".');
+    }
+    if (errorList.length > 0) {
+      logMessages(errorList);
     }
     else {
       const modalStatusIndicatorAttribute = 'data-modal-status';
@@ -271,17 +281,21 @@
         // check if modal item id is unique
         const itemInstance = modalItems.filter(i => i.hasAttribute(modalIdAttribute) === modalId);
         if (itemInstance.length > 1) {
-          logMessage(`[${modalIdAttribute}] of each [modal-item] must be unique. all modal-item with ${modalIdAttribute} [${modalId}] are skipped and not functional.`);
+          logMessages(`[${modalIdAttribute}] of each [modal-item] must be unique. all modal-item with [${modalIdAttribute}="${modalId}"] are skipped and not functional.`);
         }
         else {
           const itemActivators = document.querySelectorAll(`*[data-modal-open="${modalId}"]`);
           const itemDeactivators = item.querySelectorAll(`*[data-modal-close="${modalId}"]`);
           
+          errorList = [];
           if (!itemActivators || itemActivators.length === 0) {
-            logMessage(`no element with [data-modal-open="${modalId}"] found.`)
+            errorList.push(`no element with [data-modal-open="${modalId}"] found. modal-item with [${modalIdAttribute}="${modalId}"] will be skipped and not functional.`)
           }
-          else if (!itemDeactivators || itemDeactivators.length === 0) {
-            logMessage(`no element with [data-modal-close="${modalId}"] found.`)
+          if (!itemDeactivators || itemDeactivators.length === 0) {
+            errorList.push(`no element with [data-modal-close="${modalId}"] found. modal-item with [${modalIdAttribute}="${modalId}"] will be skipped and not functional.`)
+          }
+          if (errorList.length > 0) {
+            logMessages(errorList);
           }
           else {
             itemActivators.forEach(activator => {
@@ -299,7 +313,7 @@
                 body.setAttribute(modalStatusIndicatorAttribute, modalOpenedIndicator);
                 item.setAttribute(modalStatusIndicatorAttribute, modalOpenedIndicator);
 
-                logMessage(`[id=${modalId}] modal opened by an activator`, false);
+                logMessages(`[id=${modalId}] modal opened by an activator`, false);
               });
             });
 
@@ -312,7 +326,7 @@
                 body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
                 item.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
 
-                logMessage(`[id=${modalId}] modal closed by a deactivator`, false);
+                logMessages(`[id=${modalId}] modal closed by a deactivator`, false);
               });
             });
           }
@@ -329,7 +343,7 @@
             body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
             activeModal.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
 
-            logMessage(`[id=${activeModal.getAttribute(modalIdAttribute)}] modal closed by modal-group`, false);
+            logMessages(`[id=${activeModal.getAttribute(modalIdAttribute)}] modal closed by modal-group`, false);
           }
         }
       })
