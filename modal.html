@@ -19,6 +19,10 @@
       place-items: center;
       background: orange;
       user-select: none;
+      
+      font-family: sans-serif;
+      text-align: center;
+      line-height: 1.5;
     }
 
     .box {
@@ -62,7 +66,6 @@
     }
 
     h1 {
-      font-family: sans-serif;
       text-transform: uppercase;
       font-size: 3rem;
       margin-bottom: 30px;
@@ -88,6 +91,7 @@
       left: 0;
       display: grid;
       place-items: center;
+      overflow: scroll;
       background: var(--modal-group-smoke-color);
       opacity: 0;
       animation-duration: 0.5s;
@@ -104,6 +108,7 @@
       opacity: 0;
       z-index: -10000;
       animation-name: modal-group-close;
+      pointer-events: none;
     }
 
     @keyframes modal-group-open {
@@ -129,14 +134,23 @@
 
 
     .modal-item {
-      max-width: 95%;
-      max-height: 95%;
-      height: max(300px, 80%);
-      width: max(200px, 80%);
+      --modal-item-max-width: 90%;
+      --modal-item-max-height: 90%;
+      --modal-item-width: max(250px, var(--modal-item-max-width));
+      --modal-item-height: max(250px, var(--modal-item-max-height));
+      --modal-item-margin: 20px 10px;
+      --modal-item-padding: 30px 10px;
+      --modal-item-border-radius: 10px;
+      --modal-item-background: cyan;
+
+      width: var(--modal-item-width);
+      height: var(--modal-item-height);
+      margin: var(--modal-item-margin);
+      padding: var(--modal-item-padding);
+      border-radius: var(--modal-item-border-radius);
+      background: var(--modal-item-background);
       display: none;
-      background: cyan;
       opacity: 0;
-      border-radius: 10px;
       animation-duration: 0.5s;
       animation-fill-mode: both;
     }
@@ -148,7 +162,6 @@
 
     body[data-modal-status="open"] .modal-item[data-modal-status="open"] {
       animation-name: modal-object-open;
-      pointer-events: all;
     }
     body[data-modal-status="close"] .modal-item[data-modal-status="close"] {
       animation-name: modal-object-close;
@@ -227,6 +240,7 @@
       data-modal-id="two"
     >
       <h1>modal two</h1>
+      <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa consequatur cupiditate voluptas esse quos architecto enim ut harum quae? Dicta est explicabo corrupti necessitatibus odio beatae quaerat asperiores. Quibusdam omnis repudiandae aspernatur et natus iure veniam voluptate nisi necessitatibus animi assumenda dolorem quae excepturi obcaecati reprehenderit impedit fugiat deleniti eligendi sint similique voluptas, sit architecto quaerat. Cum, consequatur vitae. Ut ea a molestias magni officia culpa deleniti blanditiis voluptatem, pariatur earum exercitationem error eos. Rerum accusantium optio possimus debitis expedita error quam suscipit atque fugiat ducimus architecto, tempore ullam fugit assumenda odio soluta inventore facere illo aliquam illum aspernatur corrupti maiores. Aliquid nesciunt ratione aut sequi, voluptatum perferendis ut nostrum aperiam libero nisi? Eum necessitatibus ullam sapiente quod omnis voluptatibus fugiat ratione distinctio incidunt repellat quo, explicabo impedit molestias iste! Explicabo, nihil facilis. Voluptatibus autem dicta recusandae molestias placeat accusamus tenetur! Qui praesentium ab repellendus, iusto, alias quibusdam itaque vel cupiditate perferendis aspernatur corporis, dolores temporibus corrupti nostrum quo earum nulla dignissimos illo nesciunt nam? Aut vero fugiat nobis quisquam. Aliquam quis culpa atque distinctio quia eum debitis architecto at rerum libero sit recusandae amet modi est dolorem aut itaque voluptatibus laborum, tempora nobis sapiente. Exercitationem inventore ullam magnam veniam!</span>
       <span 
         class="btn" 
         data-modal-close="two"
