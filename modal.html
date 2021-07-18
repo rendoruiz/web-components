@@ -7,7 +7,6 @@
   <title>Modal</title>
 
   <style>
-    
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -31,13 +30,32 @@
     .btn {
       background: white;
       padding: 5px 20px;
-      letter-spacing: 4px;
       font-family: sans-serif;
       text-transform: uppercase;
       font-size: 2rem;
       border: none;
       border-radius: 0;
       cursor: pointer;
+
+      --opening-tag: '';
+      --closing-tag: '';
+      display: flex;
+      align-items: center;
+    }
+    .btn::before,
+    .btn::after {
+      letter-spacing: 2px;
+      font-size: 1rem;
+      text-transform: none;
+    }
+
+    .btn::before {
+      margin-right: 5px;
+      content: var(--opening-tag);
+    }
+    .btn::after {
+      margin-left: 5px;
+      content: var(--closing-tag);
     }
     .box .btn {
       color: orange;
@@ -110,7 +128,6 @@
     }
 
 
-
     .modal-item {
       max-width: 95%;
       max-height: 95%;
@@ -169,63 +186,102 @@
   </style>
 </head>
 <body>
-
   <div class="box">
-    <a href="#" class="btn" data-modal-open="1">open modal 1</a>
-    <span class="btn" data-modal-open="1">open modal 1</span>
-    <button class="btn" data-modal-open="two">open modal two</button>
+    <a 
+      href="#" 
+      class="btn" 
+      style="--opening-tag: '<a>'; --closing-tag: '</a>'" 
+      data-modal-open="1"
+    >
+      open modal 1
+    </a>
+    <button 
+      class="btn" 
+      style="--opening-tag: '<button>'; --closing-tag: '</button>'" data-modal-open="two"
+    >
+      open modal two
+    </button>
+    <span 
+      class="btn" 
+      style="--opening-tag: '<span>'; --closing-tag: '</span>'" data-modal-open="1"
+    >
+      open modal 1
+    </span>
   </div>
 
   <div class="modal-group">
-    <div class="modal-item" data-modal-id="1">
+    <div 
+      class="modal-item" 
+      data-modal-id="1"
+    >
       <h1>modal 1</h1>
-      <span class="btn" data-modal-close="1">close modal</span>
+      <span 
+        class="btn" 
+        data-modal-close="1"
+      >
+        close modal
+      </span>
     </div>
-    <div class="modal-item" data-modal-id="two">
-      <h1>modal 2</h1>
-      <span class="btn" data-modal-close="two">close modal</span>
+    <div 
+      class="modal-item" 
+      data-modal-id="two"
+    >
+      <h1>modal two</h1>
+      <span 
+        class="btn" 
+        data-modal-close="two"
+      >
+        close modal
+      </span>
     </div>
   </div>
 
   <script>
     // custom log.message()
+    const showLogMessages = false;
     const logMessage = (message, isError = true) => {
+      
       const consoleHeader = isError === true
         ? 'Modal Error:'
         : 'Modal:';
-      console.log(consoleHeader, message);
+      if (showLogMessages) {
+        console.log(consoleHeader, message);
+      }
     }
 
     const body = document.body;
     const modalGroup = document.querySelector('.modal-group');
-    const modalItems = [...modalGroup.children].filter(item => item.classList.contains('modal-item') && item.dataset.modalId);
+    const modalIdAttribute = 'data-modal-id';
+    const modalItems = [...modalGroup.children].filter(item => item.classList.contains('modal-item') && item.hasAttribute(modalIdAttribute));
 
     // check if modal-group and modal-item children exists
     if (!modalGroup) {
-      logMessage('no element with [ modal-group ] class found.')
+      logMessage('no element with [modal-group] class found.')
     }
     else if (!modalItems || modalItems.length === 0) {
-      logMessage('no element with [ modal-item ] class found inside "modal-group".');
+      logMessage('no element with [modal-item] class found inside "modal-group".');
     }
     else {
-      const modalStatusIndicator = 'data-modal-status';
+      const modalStatusIndicatorAttribute = 'data-modal-status';
+      const modalOpenedIndicator = 'open';
+      const modalClosedIndicator = 'close';
 
       modalItems.forEach(item => {
-        const modalId = item.dataset.modalId;
+        const modalId = item.getAttribute(modalIdAttribute);
         // check if modal item id is unique
-        const itemInstance = modalItems.filter(i => i.dataset.modalId === modalId);
+        const itemInstance = modalItems.filter(i => i.hasAttribute(modalIdAttribute) === modalId);
         if (itemInstance.length > 1) {
-          logMessage(`[ data-model-id ] of each [ modal-item ] must be unique. all modal-item with data-modal-id [ ${modalId} ] are skipped and not functional.`);
+          logMessage(`[${modalIdAttribute}] of each [modal-item] must be unique. all modal-item with ${modalIdAttribute} [${modalId}] are skipped and not functional.`);
         }
         else {
           const itemActivators = document.querySelectorAll(`*[data-modal-open="${modalId}"]`);
           const itemDeactivators = item.querySelectorAll(`*[data-modal-close="${modalId}"]`);
           
           if (!itemActivators || itemActivators.length === 0) {
-            logMessage(`no element with [ data-modal-open="${modalId}" ] found.`)
+            logMessage(`no element with [data-modal-open="${modalId}"] found.`)
           }
           else if (!itemDeactivators || itemDeactivators.length === 0) {
-            logMessage(`no element with [ data-modal-close="${modalId}" ] found.`)
+            logMessage(`no element with [data-modal-close="${modalId}"] found.`)
           }
           else {
             itemActivators.forEach(activator => {
@@ -234,15 +290,16 @@
                 e.stopPropagation();
 
                 // set data-modal-active for current item and clear for others
+                const modalActiveIndicatorAttribute = 'data-modal-active';
                 const otherModals = modalItems.filter(i => i !== itemInstance);
-                otherModals.forEach(i => i.removeAttribute('data-modal-active'));
-                item.setAttribute('data-modal-active', 'true');
+                otherModals.forEach(i => i.removeAttribute(modalActiveIndicatorAttribute));
+                item.setAttribute(modalActiveIndicatorAttribute, 'true');
 
                 // set modal-item and body status to open
-                body.setAttribute(modalStatusIndicator, 'open');
-                item.setAttribute(modalStatusIndicator, 'open');
+                body.setAttribute(modalStatusIndicatorAttribute, modalOpenedIndicator);
+                item.setAttribute(modalStatusIndicatorAttribute, modalOpenedIndicator);
 
-                logMessage(`[ ${item.dataset.modalId} ] modal opened by an activator`, false);
+                logMessage(`[id=${modalId}] modal opened by an activator`, false);
               });
             });
 
@@ -252,10 +309,10 @@
                 e.stopPropagation();
 
                 // set modal-item and body status to close
-                body.setAttribute(modalStatusIndicator, 'close');
-                item.setAttribute(modalStatusIndicator, 'close');
+                body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
+                item.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
 
-                logMessage(`[ ${item.dataset.modalId} ] modal opened by an deactivator`, false);
+                logMessage(`[id=${modalId}] modal closed by a deactivator`, false);
               });
             });
           }
@@ -266,13 +323,13 @@
       modalGroup.addEventListener('click', (e) => {
         if (e.target === modalGroup &&
           body.dataset.modalStatus === 'open') {
-          const activeModal = document.querySelector(`.modal-item[${modalStatusIndicator}="open"]`);
+          const activeModal = document.querySelector(`.modal-item[${modalStatusIndicatorAttribute}="open"]`);
           if (activeModal) {
             // set modal-item and body status to close
-            body.setAttribute(modalStatusIndicator, 'close');
-            activeModal.setAttribute(modalStatusIndicator, 'close');
+            body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
+            activeModal.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
 
-            logMessage(`[ ${activeModal.dataset.modalId} ] modal closed by group`, false);
+            logMessage(`[id=${activeModal.getAttribute(modalIdAttribute)}] modal closed by modal-group`, false);
           }
         }
       })
