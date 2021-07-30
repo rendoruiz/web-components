@@ -19,7 +19,7 @@
     
 
     body {
-      min-height: 100vh;
+      min-height: 120vh;
       display: grid;
       grid-template-rows: auto 1fr auto;
       
@@ -35,6 +35,9 @@
     header {
       background-color: var(--brand-color);
       color: white;
+      position: sticky;
+      top: 0;
+      width: 100%;
     }
 
     header .container {
@@ -68,6 +71,10 @@
       --nav-overlay-background-rgb: 10, 10, 10;
       --nav-list-background: var(--brand-color);
       --nav-list-foreground: white;
+    }
+
+    body[data-nav-status="active"] {
+      overflow: hidden;
     }
     
     [data-nav-toggle] {
@@ -125,7 +132,7 @@
 
     [data-nav-id] ul {
       list-style: none;
-      width: 70%;
+      width: min(210px, 80vw);
       display: flex;
       flex-direction: column;
       color: var(--nav-list-foreground);
@@ -223,7 +230,10 @@
   </header>
   <main>
     <div class="container">
-      <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum dolores labore sit earum quas dolore optio quo asperiores consectetur commodi, nihil omnis hic eius minus vero nesciunt, animi, ipsa dolorem quia voluptas? Architecto temporibus voluptate aliquam perferendis amet corporis quia harum, alias fuga nulla similique eos maxime! Omnis ut quis autem, nesciunt numquam ipsam repellendus nobis vero! Dignissimos possimus placeat hic sequi quas quibusdam molestias autem voluptatem, ipsam tempora neque quam perspiciatis optio iusto! Qui voluptatem voluptatibus maiores quibusdam, doloribus mollitia esse, dolore voluptatum non laboriosam repellendus. Quod harum omnis aut voluptatibus amet, veritatis hic in dignissimos minus asperiores facere.</span>
+      <br>
+      <span data-nav-toggle="nav1">[CLICK TO TOGGLE NAVIGATION]</span>
+      <br><br>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum dolores labore sit earum quas dolore optio quo asperiores consectetur commodi, nihil omnis hic eius minus vero nesciunt, animi, ipsa dolorem quia voluptas? Architecto temporibus voluptate aliquam perferendis amet corporis quia harum, alias fuga nulla similique eos maxime! Omnis ut quis autem, nesciunt numquam ipsam repellendus nobis vero! Dignissimos possimus placeat hic sequi quas quibusdam molestias autem voluptatem, ipsam tempora neque quam perspiciatis optio iusto! Qui voluptatem voluptatibus maiores quibusdam, doloribus mollitia esse, dolore voluptatum non laboriosam repellendus. Quod harum omnis aut voluptatibus amet, veritatis hic in dignissimos minus asperiores facere.</p>
     </div>
   </main>
 
@@ -231,10 +241,10 @@
     // go through all instances of nav menus
     document.querySelectorAll('[data-nav-id]').forEach((menu) => {
       const navId = menu.dataset.navId;
-      const navigationToggle = document.querySelector(`[data-nav-toggle="${navId}"]`);
+      const navigationToggleButtons = document.querySelectorAll(`[data-nav-toggle="${navId}"]`);
 
       // check if toggle exists for nav menu
-      if (!navigationToggle) {
+      if (navigationToggleButtons.length === 0) {
         document.error(`No toggle found for nav-id: ${navId}. Create a toggle by creating an element with property: data-nav-toggle="${navId}"`);
       }
       else {
@@ -245,24 +255,6 @@
         documentBody.append(navigationMenu);
         menu.removeAttribute('data-nav-id');
 
-        const closeNavigation = (body, navMenu) => {
-          body.dataset.navStatus = 'closed';
-          navMenu.dataset.navStatus = 'closed';
-        }
-
-        navigationToggle.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (navigationToggle.dataset.navStatus === 'active') {
-            // close if open
-            closeNavigation(documentBody, navigationMenu);
-          }
-          else {
-            // open if close
-            documentBody.dataset.navStatus = 'active';
-            navigationMenu.dataset.navStatus = 'active';
-          }
-        });
-
         // close if overlay is clicked
         navigationMenu.addEventListener('click', (e) => {
           e.preventDefault();
@@ -270,8 +262,32 @@
             closeNavigation(documentBody, navigationMenu);
           }
         });
+
+        navigationToggleButtons.forEach((navigationToggle) => {
+          navigationToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (navigationToggle.dataset.navStatus === 'active') {
+              // close if open
+              closeNavigation(documentBody, navigationMenu);
+            }
+            else {
+              // open if close
+              openNavigation(documentBody, navigationMenu);
+            }
+          });
+        });
       }
     });
+
+    const openNavigation = (body, navMenu) => {
+      body.dataset.navStatus = 'active';
+      navMenu.dataset.navStatus = 'active';
+    }
+
+    const closeNavigation = (body, navMenu) => {
+      body.dataset.navStatus = 'closed';
+      navMenu.dataset.navStatus = 'closed';
+    }
   </script>
 </body>
 </html>
