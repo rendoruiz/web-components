@@ -24,8 +24,7 @@
       grid-template-rows: auto 1fr auto;
       
       background-color: orange;
-
-      position: relative;
+      font-family: sans-serif;
     }
 
     .container {
@@ -35,24 +34,48 @@
 
     header {
       background-color: var(--brand-color);
+      color: white;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+    }
+
+    .nav-btn {
+      margin: 5px;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .branding {
+      background: turquoise;
+    }
+    .main-nav {
+      display: none;
     }
 
 
 
 
-
-
+    /* NAVIGATION MENU CSS COMPONENTS START */
+    :root {
+      --nav-overlay-background-rgb: 10, 10, 10;
+      --nav-list-background: var(--brand-color);
+      --nav-list-foreground: white;
+    }
+    
     [data-nav-toggle] {
       cursor: pointer;
     }
 
-    :root {
-      --nav-overlay-background-rgb: 10, 10, 10;
-    }
-
     [data-nav-id] {
       position: fixed;
-      z-index: -100;
       top: 0;
       right: 0;
       bottom: 0;
@@ -63,8 +86,11 @@
       animation-duration: 0.40s;
       animation-fill-mode: both;
     }
+    [data-nav-id]:not([data-nav-status]) {
+      display: none;
+    }
     body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] {
-      z-index: 100;
+      /* z-index: 100; */
       animation-name: nav-overlay-active;
     }
     body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] {
@@ -73,9 +99,14 @@
     }
     @keyframes nav-overlay-active {
       from {
+        z-index: 100;
         background-color: rgba(var(--nav-overlay-background-rgb), 0);
       }
+      95% {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+      }
       to {
+        z-index: 100;
         background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
       }
     }
@@ -83,22 +114,35 @@
       from {
         background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
       }
+      95% {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0);
+      }
       to {
+        z-index: -100;
         background-color: rgba(var(--nav-overlay-background-rgb), 0);
       }
     }
 
-
-    body[data-nav-status="active"] [data-nav-id] ul {
-      animation-duration: 0.30s;
-      animation-fill-mode: both;
-    }
-    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul {
-      width: 70%;
-      background-color: var(--brand-color);
+    [data-nav-id] ul {
       list-style: none;
+      width: 70%;
       display: flex;
       flex-direction: column;
+      color: var(--nav-list-foreground);
+      background-color: var(--nav-list-background);
+
+      animation-duration: 0.35s;
+      animation-fill-mode: both;
+    }
+    [data-nav-id] ul > li {
+      display: grid;
+    }
+    [data-nav-id] ul > li > a {
+      padding: 15px 20px;
+      text-decoration: none;
+      color: inherit;
+    }
+    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul {
       animation-name: nav-list-active;
     }
     body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] ul {
@@ -106,41 +150,67 @@
     }
     @keyframes nav-list-active {
       from {
-        transform: translateX(100%);
+        transform: translateX(120%);
       }
       to {
-        transform: unset;
+        transform: translateX(0);
       }
     }
     @keyframes nav-list-closed {
       from {
-        transform: unset;
+        transform: translateX(0);
       }
       to {
-        transform: translateX(100%);
+        transform: translateX(120%);
       }
     }
+    /* NAVIGATION MENU CSS COMPONENTS END */
 
 
-    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul > li {
-      display: grid;
-    }
-
-    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul > li > a {
-      padding: 15px 20px;
-      text-decoration: none;
-    }
-
-    @media (max-width: 768px) {
-      
+    @media (min-width: 768px) {
+      .nav-toggle {
+        display: none;
+      }
+      .main-nav {
+        display: grid;
+        margin-right: 10px;
+      }
+      .main-nav ul {
+        list-style: none;
+        display: grid;
+        grid-auto-flow: column;
+        gap: 5px;
+      }
+      .main-nav li {
+        display: grid;
+      }
+      .main-nav a,
+      .main-nav a:visited {
+        text-decoration: none;
+        display: grid;
+        place-items: center;
+        padding: 0 15px;
+        margin: 5px 0;
+        border-radius: 4px;
+        color: white;
+        transition: all 0.15s ease-in-out;
+      }
+      .main-nav a:hover,
+      .main-nav a:active {
+        color: var(--brand-color);
+        background: white;
+      }
+      .main-nav a:active {
+        transform: scale(0.95);
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="container">
-      <div class="branding">R</div>
-      <nav data-nav-id="main-nav" class="main-nav">
+      <div class="branding nav-btn">R</div>
+      <nav data-nav-id="nav1" class="main-nav">
         <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">About</a></li>
@@ -148,7 +218,7 @@
           <li><a href="#">Contact</a></li>
         </ul>
       </nav>
-      <span data-nav-toggle="main-nav" class="nav-toggle">&#9776;</span>
+      <span data-nav-toggle="nav1" class="nav-toggle nav-btn">&#9776;</span>
     </div>
   </header>
   <main>
@@ -158,9 +228,12 @@
   </main>
 
   <script>
+    // go through all instances of nav menus
     document.querySelectorAll('[data-nav-id]').forEach((menu) => {
       const navId = menu.dataset.navId;
       const navigationToggle = document.querySelector(`[data-nav-toggle="${navId}"]`);
+
+      // check if toggle exists for nav menu
       if (!navigationToggle) {
         document.error(`No toggle found for nav-id: ${navId}. Create a toggle by creating an element with property: data-nav-toggle="${navId}"`);
       }
@@ -172,16 +245,16 @@
         documentBody.append(navigationMenu);
         menu.removeAttribute('data-nav-id');
 
-        // debug
-        documentBody.dataset.navStatus = 'active';
-            navigationMenu.dataset.navStatus = 'active';
-        
-        
+        const closeNavigation = (body, navMenu) => {
+          body.dataset.navStatus = 'closed';
+          navMenu.dataset.navStatus = 'closed';
+        }
+
         navigationToggle.addEventListener('click', (e) => {
+          e.preventDefault();
           if (navigationToggle.dataset.navStatus === 'active') {
             // close if open
-            documentBody.dataset.navStatus = 'closed';
-            navigationMenu.dataset.navStatus = 'closed';
+            closeNavigation(documentBody, navigationMenu);
           }
           else {
             // open if close
@@ -190,15 +263,15 @@
           }
         });
 
+        // close if overlay is clicked
         navigationMenu.addEventListener('click', (e) => {
+          e.preventDefault();
           if (e.target === navigationMenu) {
-            documentBody.dataset.navStatus = 'closed';
-            navigationMenu.dataset.navStatus = 'closed';
+            closeNavigation(documentBody, navigationMenu);
           }
-        })
-        
+        });
       }
-    })
+    });
   </script>
 </body>
 </html>
