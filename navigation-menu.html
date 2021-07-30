@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>NavigationMenu</title>
+
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -12,130 +13,192 @@
       padding: 0;
     }
 
-    body {
-      background: #333;
-      color: #eee;
-      font-family: sans-serif
+    :root {
+      --brand-color: rgb(47, 179, 255);
     }
-    body.menu-visible {
-      overflow: hidden;
+    
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      
+      background-color: orange;
+
+      position: relative;
+    }
+
+    .container {
+      min-width: 300px;
+      max-width: 900px;
     }
 
     header {
-      --bg: lightskyblue;
-      --primary: violet;
-      background-color: var(--bg);
-      display: grid;    
-      grid-auto-flow: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      overflow: hidden;
-    }
-    .branding {
-      height: 50px;
-      width: 50px;
-      background-color: var(--primary);
-      border-radius: 100%;
-      display: grid;
-      place-items: center;
+      background-color: var(--brand-color);
     }
 
-    
-    .menu-visible .main-nav {
-      display: block;
-      position: absolute;
-      z-index: 1000;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+
+
+
+
+
+    [data-nav-toggle] {
+      cursor: pointer;
     }
 
-    .main-nav ul {
-      --transition-timing: 0.5s ease-in-out;
-      list-style: none;
+    :root {
+      --nav-overlay-background-rgb: 10, 10, 10;
+    }
+
+    [data-nav-id] {
       position: fixed;
-      z-index: 1000000;
+      z-index: -100;
       top: 0;
       right: 0;
-      width: 80%;
-      height: 100%;
-      display: grid;
-      align-content: flex-start;
-      justify-items: start;
-      background-color: var(--bg);
-      transform: translateX(100%);
-      transition: box-shadow var(--transition-timing), transform var(--transition-timing);
-    }
-    .menu-visible .main-nav ul {
-      overflow-y: scroll;
-      transform: none;
-      box-shadow: 0 0 200px 100px rgb(30,30,30);
-    }
-    .main-nav a {
+      bottom: 0;
+      left: 0;
       display: flex;
-      padding: 2vh 2vw;
-      justify-content: center;
-      color: inherit;
+      justify-content: flex-end;
+
+      animation-duration: 0.40s;
+      animation-fill-mode: both;
+    }
+    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] {
+      z-index: 100;
+      animation-name: nav-overlay-active;
+    }
+    body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] {
+      animation-name: nav-overlay-closed;
+      /* z-index: -100; */
+    }
+    @keyframes nav-overlay-active {
+      from {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0);
+      }
+      to {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+      }
+    }
+    @keyframes nav-overlay-closed {
+      from {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+      }
+      to {
+        background-color: rgba(var(--nav-overlay-background-rgb), 0);
+      }
+    }
+
+
+    body[data-nav-status="active"] [data-nav-id] ul {
+      animation-duration: 0.30s;
+      animation-fill-mode: both;
+    }
+    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul {
+      width: 70%;
+      background-color: var(--brand-color);
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      animation-name: nav-list-active;
+    }
+    body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] ul {
+      animation-name: nav-list-closed;
+    }
+    @keyframes nav-list-active {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: unset;
+      }
+    }
+    @keyframes nav-list-closed {
+      from {
+        transform: unset;
+      }
+      to {
+        transform: translateX(100%);
+      }
+    }
+
+
+    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul > li {
+      display: grid;
+    }
+
+    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul > li > a {
+      padding: 15px 20px;
       text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
       
     }
-    .nav-toggle {
-      font-size: 2rem;
-    }
-
-    @media screen and (min-width: 600px) {
-      .nav-toggle {
-        display: none;
-      }
-
-      .main-nav ul {
-        position: static;
-        transform: none;
-        grid-auto-flow: column;
-      }
-    }
-
-
   </style>
 </head>
 <body>
   <header>
-    <div class="branding">R</div>
-    <nav class="main-nav">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-    <span class="nav-toggle">🍔</span>
+    <div class="container">
+      <div class="branding">R</div>
+      <nav data-nav-id="main-nav" class="main-nav">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Projects</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <span data-nav-toggle="main-nav" class="nav-toggle">&#9776;</span>
+    </div>
   </header>
   <main>
-    <section>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae quae assumenda quasi odio molestiae. Excepturi blanditiis quo magni sed ea unde assumenda, fugiat consequatur amet aliquid iure, officiis nulla neque? Veritatis blanditiis sequi voluptatem architecto tenetur amet quas delectus nemo possimus et similique, non eveniet id esse vitae modi maxime officia laboriosam voluptatum voluptates harum expedita odio quisquam distinctio? Minus sunt ratione ipsa, repellendus suscipit vero odit quasi facilis alias similique doloribus quam doloremque repellat eveniet rem rerum iusto quidem accusantium saepe assumenda reiciendis est? Iusto impedit laboriosam voluptates, accusantium vel similique! Dolore distinctio illum culpa quas impedit praesentium ex!</section>
-    <section>Nulla quibusdam enim delectus ullam beatae similique libero, at saepe tempore sequi expedita ab vitae quisquam, quos sint, nobis commodi ipsam dolor itaque laboriosam pariatur voluptatem repudiandae. Corporis hic pariatur, magnam incidunt accusamus nihil a eaque consectetur sapiente inventore, repellat sed tenetur, quia quae sint laboriosam esse eius non. Necessitatibus, ea doloribus accusantium omnis molestias nemo? Itaque molestiae, et quo cumque sit, labore autem quasi debitis error quis soluta repudiandae impedit. Aut inventore corrupti a blanditiis quasi ducimus impedit sequi, nihil distinctio, debitis pariatur sapiente unde! Consectetur ad laudantium in quas sunt aperiam voluptatibus deserunt distinctio doloribus eum, fuga aliquid.</section>
-    <section>Reprehenderit sed alias quibusdam repudiandae officia nulla incidunt autem delectus voluptate odit suscipit magnam cupiditate necessitatibus consequuntur, animi cum tenetur, unde quaerat? Quod ipsum quasi nulla natus, quaerat culpa rerum ut. Saepe adipisci alias ipsum tempora? Iure ab rem atque tempore dolore? Commodi, harum. Deleniti aliquid corporis quasi quae dicta dignissimos ratione beatae saepe illum obcaecati, magni expedita distinctio omnis, perferendis provident nulla natus veritatis ullam odio! Doloremque tempora non minima magnam laboriosam quam aut deleniti molestias quibusdam alias! Asperiores praesentium delectus dicta dignissimos error quia nisi mollitia, facilis omnis vel iusto, labore quidem fugit suscipit, impedit sed vero autem?</section>
-    <section>Cumque cupiditate nostrum laboriosam maiores nemo a eum, consectetur, aperiam veniam est maxime quae assumenda ratione perferendis eaque doloremque tempore fuga quibusdam porro magnam! Sapiente, quibusdam assumenda est dignissimos id sequi, rerum maxime laboriosam cumque distinctio ducimus ex placeat tempora aspernatur ut fugit maiores repellendus veniam quas iste officia quam! Sequi deserunt cupiditate maxime consequuntur. Qui dicta temporibus quas minus cupiditate similique iure est ullam, obcaecati dolore maiores quam impedit, iusto nesciunt tempore facere. Provident id libero incidunt veritatis odio corporis hic, officiis velit ipsa optio ullam. Quia illum, possimus explicabo quaerat, nulla ratione beatae autem sit nesciunt rerum inventore!</section>
-    <section>Asperiores excepturi in dignissimos corrupti dicta magnam facere quisquam odio quo cupiditate ab atque officia quis harum, officiis aliquid necessitatibus magni maxime tempore impedit reiciendis a! Laudantium blanditiis eos dolorem minima aut excepturi soluta quae in doloribus hic similique, veritatis commodi fuga quo modi nulla necessitatibus facere perspiciatis cumque officiis autem doloremque et vero impedit! Libero odio dolor modi nihil dolores mollitia a? Quibusdam fugiat magni nostrum consequatur, sit suscipit velit ex possimus laborum accusantium libero ipsa id corporis eum ab ducimus minima vero sequi. Et non consequuntur deleniti, esse quaerat voluptatum enim sint facilis odit asperiores, modi quis voluptas.</section>
+    <div class="container">
+      <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum dolores labore sit earum quas dolore optio quo asperiores consectetur commodi, nihil omnis hic eius minus vero nesciunt, animi, ipsa dolorem quia voluptas? Architecto temporibus voluptate aliquam perferendis amet corporis quia harum, alias fuga nulla similique eos maxime! Omnis ut quis autem, nesciunt numquam ipsam repellendus nobis vero! Dignissimos possimus placeat hic sequi quas quibusdam molestias autem voluptatem, ipsam tempora neque quam perspiciatis optio iusto! Qui voluptatem voluptatibus maiores quibusdam, doloribus mollitia esse, dolore voluptatum non laboriosam repellendus. Quod harum omnis aut voluptatibus amet, veritatis hic in dignissimos minus asperiores facere.</span>
+    </div>
   </main>
 
   <script>
-    const navToggledFlag = 'menu-visible';
-    const documentBody = document.querySelector('body');
-    const mainNav = document.querySelector('.main-nav');
-    const navToggle = document.querySelector('.nav-toggle');
-
-    const toggleNavigationMenu = (event) => {
-      if (documentBody.classList.contains(navToggledFlag)) {
-        documentBody.classList.remove(navToggledFlag);
-      } else {
-        documentBody.classList.add(navToggledFlag);
+    document.querySelectorAll('[data-nav-id]').forEach((menu) => {
+      const navId = menu.dataset.navId;
+      const navigationToggle = document.querySelector(`[data-nav-toggle="${navId}"]`);
+      if (!navigationToggle) {
+        document.error(`No toggle found for nav-id: ${navId}. Create a toggle by creating an element with property: data-nav-toggle="${navId}"`);
       }
-    }
-    navToggle.addEventListener('click', toggleNavigationMenu);
-    mainNav.addEventListener('click', toggleNavigationMenu);
+      else {
+        const navigationMenu = menu.cloneNode(true);
+        const documentBody = document.querySelector('body');
+        // append to document body and remove attribute to initialized element
+        navigationMenu.removeAttribute('class');
+        documentBody.append(navigationMenu);
+        menu.removeAttribute('data-nav-id');
+
+        // debug
+        documentBody.dataset.navStatus = 'active';
+            navigationMenu.dataset.navStatus = 'active';
+        
+        
+        navigationToggle.addEventListener('click', (e) => {
+          if (navigationToggle.dataset.navStatus === 'active') {
+            // close if open
+            documentBody.dataset.navStatus = 'closed';
+            navigationMenu.dataset.navStatus = 'closed';
+          }
+          else {
+            // open if close
+            documentBody.dataset.navStatus = 'active';
+            navigationMenu.dataset.navStatus = 'active';
+          }
+        });
+
+        navigationMenu.addEventListener('click', (e) => {
+          if (e.target === navigationMenu) {
+            documentBody.dataset.navStatus = 'closed';
+            navigationMenu.dataset.navStatus = 'closed';
+          }
+        })
+        
+      }
+    })
   </script>
 </body>
 </html>
