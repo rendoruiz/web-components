@@ -13,6 +13,7 @@ body[data-nav-status="active"] {
 }
 
 [data-nav-id] {
+  --scrollbar-width: 0px;
   position: fixed;
   top: 0;
   right: 0;
@@ -61,7 +62,7 @@ body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] {
 
 [data-nav-id] ul {
   list-style: none;
-  width: min(210px, 80vw);
+  width: calc(min(210px, 80vw) + var(--scrollbar-width));
   display: flex;
   flex-direction: column;
   color: var(--nav-list-foreground);
