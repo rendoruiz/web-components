@@ -64,116 +64,6 @@
     }
 
 
-
-
-    /* NAVIGATION MENU CSS COMPONENTS START */
-    :root {
-      --nav-overlay-background-rgb: 10, 10, 10;
-      --nav-list-background: var(--brand-color);
-      --nav-list-foreground: white;
-    }
-
-    body[data-nav-status="active"] {
-      overflow: hidden;
-    }
-    
-    [data-nav-toggle] {
-      cursor: pointer;
-    }
-
-    [data-nav-id] {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      justify-content: flex-end;
-
-      animation-duration: 0.40s;
-      animation-fill-mode: both;
-    }
-    [data-nav-id]:not([data-nav-status]) {
-      display: none;
-    }
-    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] {
-      /* z-index: 100; */
-      animation-name: nav-overlay-active;
-    }
-    body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] {
-      animation-name: nav-overlay-closed;
-      /* z-index: -100; */
-    }
-    @keyframes nav-overlay-active {
-      from {
-        z-index: 100;
-        background-color: rgba(var(--nav-overlay-background-rgb), 0);
-      }
-      95% {
-        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
-      }
-      to {
-        z-index: 100;
-        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
-      }
-    }
-    @keyframes nav-overlay-closed {
-      from {
-        background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
-      }
-      95% {
-        background-color: rgba(var(--nav-overlay-background-rgb), 0);
-      }
-      to {
-        z-index: -100;
-        background-color: rgba(var(--nav-overlay-background-rgb), 0);
-      }
-    }
-
-    [data-nav-id] ul {
-      list-style: none;
-      width: min(210px, 80vw);
-      display: flex;
-      flex-direction: column;
-      color: var(--nav-list-foreground);
-      background-color: var(--nav-list-background);
-
-      animation-duration: 0.35s;
-      animation-fill-mode: both;
-    }
-    [data-nav-id] ul > li {
-      display: grid;
-    }
-    [data-nav-id] ul > li > a {
-      padding: 15px 20px;
-      text-decoration: none;
-      color: inherit;
-    }
-    body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul {
-      animation-name: nav-list-active;
-    }
-    body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] ul {
-      animation-name: nav-list-closed;
-    }
-    @keyframes nav-list-active {
-      from {
-        transform: translateX(120%);
-      }
-      to {
-        transform: translateX(0);
-      }
-    }
-    @keyframes nav-list-closed {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(120%);
-      }
-    }
-    /* NAVIGATION MENU CSS COMPONENTS END */
-
-
     @media (min-width: 768px) {
       .nav-toggle {
         display: none;
@@ -212,6 +102,8 @@
       }
     }
   </style>
+
+  <link rel="stylesheet" href="css/navigation-menu.css">
 </head>
 <body>
   <header>
@@ -237,57 +129,6 @@
     </div>
   </main>
 
-  <script>
-    // go through all instances of nav menus
-    document.querySelectorAll('[data-nav-id]').forEach((menu) => {
-      const navId = menu.dataset.navId;
-      const navigationToggleButtons = document.querySelectorAll(`[data-nav-toggle="${navId}"]`);
-
-      // check if toggle exists for nav menu
-      if (navigationToggleButtons.length === 0) {
-        document.error(`No toggle found for nav-id: ${navId}. Create a toggle by creating an element with property: data-nav-toggle="${navId}"`);
-      }
-      else {
-        const navigationMenu = menu.cloneNode(true);
-        const documentBody = document.querySelector('body');
-        // append to document body and remove attribute to initialized element
-        navigationMenu.removeAttribute('class');
-        documentBody.append(navigationMenu);
-        menu.removeAttribute('data-nav-id');
-
-        // close if overlay is clicked
-        navigationMenu.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (e.target === navigationMenu) {
-            closeNavigation(documentBody, navigationMenu);
-          }
-        });
-
-        navigationToggleButtons.forEach((navigationToggle) => {
-          navigationToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (navigationToggle.dataset.navStatus === 'active') {
-              // close if open
-              closeNavigation(documentBody, navigationMenu);
-            }
-            else {
-              // open if close
-              openNavigation(documentBody, navigationMenu);
-            }
-          });
-        });
-      }
-    });
-
-    const openNavigation = (body, navMenu) => {
-      body.dataset.navStatus = 'active';
-      navMenu.dataset.navStatus = 'active';
-    }
-
-    const closeNavigation = (body, navMenu) => {
-      body.dataset.navStatus = 'closed';
-      navMenu.dataset.navStatus = 'closed';
-    }
-  </script>
+  <script src="js/dist/navigation-menu.js" type="module"></script>
 </body>
 </html>

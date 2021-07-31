@@ -1,0 +1,102 @@
+:root {
+  --nav-overlay-background-rgb: 10, 10, 10;
+  --nav-list-background: var(--brand-color);
+  --nav-list-foreground: white;
+}
+
+body[data-nav-status="active"] {
+  overflow: hidden;
+}
+
+[data-nav-toggle] {
+  cursor: pointer;
+}
+
+[data-nav-id] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: flex-end;
+
+  animation-duration: 0.40s;
+  animation-fill-mode: both;
+}
+[data-nav-id]:not([data-nav-status]) {
+  display: none;
+}
+body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] {
+  animation-name: nav-overlay-active;
+}
+body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] {
+  animation-name: nav-overlay-closed;
+}
+@keyframes nav-overlay-active {
+  from {
+    z-index: 100;
+    background-color: rgba(var(--nav-overlay-background-rgb), 0);
+  }
+  95% {
+    background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+  }
+  to {
+    z-index: 100;
+    background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+  }
+}
+@keyframes nav-overlay-closed {
+  from {
+    background-color: rgba(var(--nav-overlay-background-rgb), 0.8);
+  }
+  95% {
+    background-color: rgba(var(--nav-overlay-background-rgb), 0);
+  }
+  to {
+    z-index: -100;
+    background-color: rgba(var(--nav-overlay-background-rgb), 0);
+  }
+}
+
+[data-nav-id] ul {
+  list-style: none;
+  width: min(210px, 80vw);
+  display: flex;
+  flex-direction: column;
+  color: var(--nav-list-foreground);
+  background-color: var(--nav-list-background);
+
+  animation-duration: 0.35s;
+  animation-fill-mode: both;
+}
+[data-nav-id] ul > li {
+  display: grid;
+}
+[data-nav-id] ul > li > a {
+  padding: 15px 20px;
+  text-decoration: none;
+  color: inherit;
+}
+body[data-nav-status="active"] [data-nav-id][data-nav-status="active"] ul {
+  animation-name: nav-list-active;
+}
+body[data-nav-status="closed"] [data-nav-id][data-nav-status="closed"] ul {
+  animation-name: nav-list-closed;
+}
+@keyframes nav-list-active {
+  from {
+    transform: translateX(120%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes nav-list-closed {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
