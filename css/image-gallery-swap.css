@@ -18,10 +18,9 @@ div.gallery {
   grid-template-rows: auto auto;
   grid-template-columns: repeat(3, 1fr);
   place-items: stretch;
-  /* position: relative */
   user-select: none;
-  /* --grid-gap: 10px;
-  gap: var(--grid-gap); */
+  --grid-gap: 10px;
+  gap: var(--grid-gap);
 }
 
 div.gallery section {
