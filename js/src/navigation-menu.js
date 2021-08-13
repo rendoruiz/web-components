@@ -74,5 +74,4 @@ function getScrollbarWidth() {
   outer.parentNode.removeChild(outer);
 
   return scrollbarWidth;
-
 }

@@ -1,3 +1,5 @@
+
+
 // custom log.message()
 const enableLogMessages = true;
 const logMessages = (messages, isError = true) => {
@@ -33,6 +35,7 @@ if (errorList.length > 0) {
   logMessages(errorList);
 }
 else {
+  const browserScrollbarWidth = getScrollbarWidth();
   const modalStatusIndicatorAttribute = 'data-modal-status';
   const modalOpenedIndicator = 'open';
   const modalClosedIndicator = 'close';
@@ -64,6 +67,8 @@ else {
             e.preventDefault();
             e.stopPropagation();
 
+            body.style.paddingRight = `${browserScrollbarWidth}px`;
+            modalGroup.style.setProperty('--scrollbar-width', 'unset');
             // set data-modal-active for current item and clear for others
             const modalActiveIndicatorAttribute = 'data-modal-active';
             const otherModals = modalItems.filter(i => i !== itemInstance);
@@ -83,6 +88,8 @@ else {
             e.preventDefault();
             e.stopPropagation();
 
+            body.style.paddingRight = 'unset';
+            modalGroup.style.setProperty('--scrollbar-width', `-${browserScrollbarWidth}px`);
             // set modal-item and body status to close
             body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
             item.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
@@ -100,6 +107,7 @@ else {
       body.dataset.modalStatus === 'open') {
       const activeModal = document.querySelector(`.modal-item[${modalStatusIndicatorAttribute}="open"]`);
       if (activeModal) {
+        modalGroup.style.setProperty('--scrollbar-width', `-${browserScrollbarWidth}px`);
         // set modal-item and body status to close
         body.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
         activeModal.setAttribute(modalStatusIndicatorAttribute, modalClosedIndicator);
@@ -108,4 +116,27 @@ else {
       }
     }
   })
+}
+
+
+// https://stackoverflow.com/a/13382873
+function getScrollbarWidth() {
+  // Creating invisible container
+  const outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.overflow = 'scroll'; // forcing scrollbar to appear
+  outer.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+  document.body.appendChild(outer);
+
+  // Creating inner element and placing it in the container
+  const inner = document.createElement('div');
+  outer.appendChild(inner);
+
+  // Calculating difference between container's full width and the child width
+  const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+  // Removing temporary elements from the DOM
+  outer.parentNode.removeChild(outer);
+
+  return scrollbarWidth;
 }

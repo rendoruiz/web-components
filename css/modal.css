@@ -4,7 +4,9 @@ body[data-modal-status="open"] {
 
 .modal-group {
   --modal-group-smoke-color: rgba(30, 30, 30, 0.7);
+  --scrollbar-width: 0px;
 
+  margin-right: var(--scrollbar-width);
   position: fixed;
   z-index: -10000;
   top: 0;
@@ -13,7 +15,7 @@ body[data-modal-status="open"] {
   left: 0;
   display: grid;
   place-items: center;
-  overflow: scroll;
+  /* overflow-x: hidden; */
   background: var(--modal-group-smoke-color);
   opacity: 0;
   animation-duration: 0.5s;
@@ -65,8 +67,8 @@ body[data-modal-status="close"] .modal-group {
   --modal-item-border-radius: 10px;
   --modal-item-background: cyan;
 
-  width: var(--modal-item-width);
-  height: var(--modal-item-height);
+  /* width: var(--modal-item-width);
+  height: var(--modal-item-height); */
   margin: var(--modal-item-margin);
   padding: var(--modal-item-padding);
   border-radius: var(--modal-item-border-radius);
