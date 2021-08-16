@@ -12,8 +12,6 @@
   --modal-overlay-background: rgba(30, 30, 30, 0.6);
   --modal-overlay-transition-timing: 300ms;
   --modal-overlay-display: grid;
-  --modal-item-transition: translateY(-50px);
-  /* --modal-item-transition: scale(1.1); */
 
   display: none;
   position: fixed;
@@ -25,10 +23,15 @@
   place-items: center;
   margin-right: calc(var(--browser-window-scrollbar-width) * -1);
   background: var(--modal-overlay-background);
+  overflow: hidden;
   opacity: 0;
   transition: opacity var(--modal-overlay-transition-timing);
 
   & > .modal-item {
+    /* --modal-item-transition: translateY(-50px); */
+    --modal-item-transition: scale(1.1);
+
+    overflow: auto;
     transform: var(--modal-item-transition);
     opacity: 0;
     transition: all var(--modal-overlay-transition-timing);

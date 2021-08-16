@@ -45,10 +45,12 @@
     .modal-item {
       color: black;
       background: white;
-      /* height: 100%;
-      width: 100%; */
       display: grid;
       place-items: center;
+    }
+    .modal-item.slide-down {
+      /* overwrite transition animation */
+      --modal-item-transition: translateY(-50px);
     }
   </style>
 </head>
@@ -57,6 +59,8 @@
     <span class="btn" data-modal-activator="1">Activator for modal-id="1"</span>
     <button class="btn" data-modal-activator="1">Another activator for modal-id="1"</button>
     <a href="#" class="btn" data-modal-activator="two">Activator for modal-id="two"</a>
+    <span class="btn" data-modal-activator="3">Lorem300</span>
+    <span class="btn" data-modal-activator="4four">custom transition (slide down)</span>
   </main>
 
   <div class="modal-group">
@@ -65,6 +69,15 @@
     </div>
     <div class="modal-item" data-modal-id="two">
       <button class="btn" data-modal-deactivator="two">Deactivator for modal-id="two"</button>
+    </div>
+    <div class="modal-item" data-modal-id="3">
+      <button class="btn" data-modal-deactivator="3">Deactivator for modal-id="3"</button>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam facere quidem ab, aspernatur quia inventore ducimus esse molestias facilis enim eum corrupti non quibusdam illo consequuntur blanditiis! Eaque, ex beatae nostrum, ut, blanditiis perspiciatis id officiis soluta optio impedit architecto dolore nisi tempora aut harum rerum excepturi consectetur assumenda veniam illo error facere eius illum exercitationem! Perferendis quasi nemo tempore aliquid itaque, illo esse non praesentium, a cupiditate aut beatae? Non, magni dicta velit illo omnis amet, quo soluta, nisi impedit perferendis similique ducimus temporibus praesentium vel saepe cumque rem sunt debitis minima fuga harum eligendi. Vel, distinctio cum harum provident dignissimos molestias accusamus, odit at, optio architecto explicabo qui ea quibusdam consequuntur quaerat exercitationem in. Aliquid dicta illum laboriosam similique ipsum eveniet neque ut, quisquam praesentium quas, iusto consequatur facilis recusandae pariatur quam nobis et, quos accusamus magni repellendus ad. Excepturi quis quisquam ab dolorem architecto quos aliquam consequatur necessitatibus sequi explicabo ad facere praesentium, illum consequuntur doloremque expedita rerum! Tempora, labore. Consequuntur, cupiditate sed unde consequatur ipsa aliquid, atque quos debitis vel dignissimos corporis fuga, recusandae tenetur reprehenderit quam velit. Aliquam adipisci quisquam illo quam maxime! Nemo accusamus fuga, molestiae ab, beatae odit excepturi cumque enim dolor eaque mollitia? Aliquam debitis esse est iure, expedita temporibus nesciunt ducimus rerum vero quod, inventore, voluptatibus unde natus autem atque culpa praesentium quisquam aut quam quibusdam tempore? Ducimus vel iste illum, error aut veritatis assumenda delectus deleniti animi obcaecati molestiae, repellendus sunt qui! Corrupti inventore eos ullam quas cum laborum velit numquam officia. Cupiditate blanditiis vel distinctio exercitationem repudiandae, libero quas? Tempora molestias, animi rerum repudiandae obcaecati, optio blanditiis illo ex commodi delectus nesciunt! Dolor odit et ipsa deleniti! Eaque ab laudantium cum numquam temporibus veniam sed odit velit placeat qui minus ullam quos necessitatibus reiciendis veritatis, assumenda reprehenderit soluta similique?
+    </div>
+    <div class="modal-item slide-down" data-modal-id="4four">
+      <button class="btn" data-modal-deactivator="4four">Deactivator for modal-id="4four"</button>
+      <br>
+      <div class="btn" data-modal-deactivator="4four">Another deactivator for modal-id="4four"</div>
     </div>
   </div>
 
