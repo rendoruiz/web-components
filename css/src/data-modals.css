@@ -12,6 +12,8 @@
   --modal-overlay-background: rgba(30, 30, 30, 0.6);
   --modal-overlay-transition-timing: 300ms;
   --modal-overlay-display: grid;
+  --modal-item-transition: translateY(-50px);
+  /* --modal-item-transition: scale(1.1); */
 
   display: none;
   position: fixed;
@@ -21,16 +23,20 @@
   left: 0;
   display: none;
   place-items: center;
+  margin-right: calc(var(--browser-window-scrollbar-width) * -1);
   background: var(--modal-overlay-background);
   opacity: 0;
   transition: opacity var(--modal-overlay-transition-timing);
 
   & > .modal-item {
-    transform: translateY(-120px);
+    transform: var(--modal-item-transition);
     opacity: 0;
     transition: all var(--modal-overlay-transition-timing);
 
-
+    /* default style */
+    max-width: 95vw;
+    max-height: 95vh;
+    border-radius: 8px;
   }
 }
 
@@ -39,7 +45,7 @@ body[data-modal-status="on"] {
   padding-right: var(--browser-window-scrollbar-width);
 
   & .modal-group {
-    padding-right: var(--browser-window-scrollbar-width);
+    margin-right: 0;
     opacity: 1;
 
     & .modal-item[data-modal-status="on"] {

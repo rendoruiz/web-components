@@ -60,8 +60,8 @@ const modalConfig = {
 const modalGroup = {
   object: document.querySelector(`.${modalConfig.class.modalGroup}`),
 };
-const modalItemList = [...modalGroup.object.children].filter(modalItem => modalItem.classList.contains(modalConfig.class.modalItem) && modalItem.hasAttribute(modalConfig.attribute.modalItemId));
-
+const modalItemList = [...modalGroup.object.children].filter(modalItem => modalItem.classList.contains(modalConfig.class.modalItem) && modalItem.hasAttribute(modalConfig.attribute.modalItemId)).map((modalItem) => { return { object: modalItem } });
+let activeModal = null;
 
 // check for existing modal-group and modal-item elements
 if (!modalGroup.object) {
@@ -83,11 +83,12 @@ else {
   const browserScrollbarWidth = getScrollbarWidth();
   document.querySelector(':root').style.setProperty(modalConfig.cssProperty.scrollbarWidth, browserScrollbarWidth === 0 ? '0' : `${browserScrollbarWidth}px`);
 
-  modalItemList.forEach((modalItem) => {
+  modalItemList.forEach((item) => {
+    const modalItem = item.object;
     const modalItemId = modalItem.getAttribute(modalConfig.attribute.modalItemId);
 
     // check if modal id is unique
-    const itemInstanceList = modalItemList.filter((item) => item.getAttribute(modalConfig.attribute.modalItemId) === modalItemId);
+    const itemInstanceList = modalItemList.filter((item) => item.object.getAttribute(modalConfig.attribute.modalItemId) === modalItemId);
     if (itemInstanceList.length > 1) {
       displayLogMessage(`The [${modalConfig.attribute.modalItemId}] attribute value of each [${modalConfig.class.modalItem}] must be unique. All modal-item with [${modalConfig.attribute.modalItemId}="${modalItemId}"] will not be functional.`);
     }
@@ -108,7 +109,11 @@ else {
         displayLogMessage(errorList);
       }
       else {
+        // set modal status to inactive
         modalItem.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive)
+        // store modal item display css property, then hide from document flow
+        item.display = getComputedStyle(item.object).getPropertyValue('display');
+        modalItem.style.display = 'none';
 
         // initialize modal-item activators
         modalItemActivatorList.forEach((activator) => {
@@ -116,7 +121,7 @@ else {
             e.preventDefault();
             e.stopPropagation();
 
-            modalGroup.activeModal = modalItem;
+            activeModal = item;
             activateModal();
           })
         });
@@ -146,7 +151,8 @@ else {
 const activateModal = () => {
   // display modal on the document flow
   modalGroup.object.style.display = modalGroup.display;
-  modalGroup.activeModal.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.active)
+  activeModal.object.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.active)
+  activeModal.object.style.display = activeModal.display;
 
   // add timeout to enable transition animation
   setTimeout(() => {
@@ -161,6 +167,7 @@ const deactivateModal = () => {
   // hide modal from document flow after the transition animation
   setTimeout(() => {
     modalGroup.object.style.display = 'none';
-    modalGroup.activeModal.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive)
+    activeModal.object.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive)
+    activeModal.object.style.display = 'none';
   }, modalGroup.transitionTiming - 200);
 }
