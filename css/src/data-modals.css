@@ -10,7 +10,7 @@
 }
 .modal-group {
   --modal-overlay-background: rgba(30, 30, 30, 0.6);
-  --modal-overlay-transition-timing: 500ms;
+  --modal-overlay-transition-timing: 300ms;
   --modal-overlay-display: grid;
 
   display: none;
@@ -24,6 +24,14 @@
   background: var(--modal-overlay-background);
   opacity: 0;
   transition: opacity var(--modal-overlay-transition-timing);
+
+  & > .modal-item {
+    transform: translateY(-120px);
+    opacity: 0;
+    transition: all var(--modal-overlay-transition-timing);
+
+
+  }
 }
 
 body[data-modal-status="on"] {
@@ -33,5 +41,10 @@ body[data-modal-status="on"] {
   & .modal-group {
     padding-right: var(--browser-window-scrollbar-width);
     opacity: 1;
+
+    & .modal-item[data-modal-status="on"] {
+      transform: unset;
+      opacity: 1;
+    }
   }
 }

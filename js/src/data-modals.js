@@ -53,14 +53,15 @@ const modalConfig = {
     scrollbarWidth: '--browser-window-scrollbar-width'
   },
   status: {
-    activated: 'on',
-    // deactivated: 'off'
+    active: 'on',
+    inactive: 'off'
   }
 };
 const modalGroup = {
   object: document.querySelector(`.${modalConfig.class.modalGroup}`),
 };
 const modalItemList = [...modalGroup.object.children].filter(modalItem => modalItem.classList.contains(modalConfig.class.modalItem) && modalItem.hasAttribute(modalConfig.attribute.modalItemId));
+
 
 // check for existing modal-group and modal-item elements
 if (!modalGroup.object) {
@@ -69,7 +70,6 @@ if (!modalGroup.object) {
   // initialize modal-group
   modalGroup.display = getComputedStyle(modalGroup.object).getPropertyValue(modalConfig.cssProperty.display);
   modalGroup.transitionTiming = parseInt(getComputedStyle(modalGroup.object).getPropertyValue(modalConfig.cssProperty.transitionTiming)) ?? 100;
-  console.log(modalGroup);
 }
 if (modalItemList.length === 0) {
   errorList.push(`Elements with ${modalConfig.class.modalItem} class not found inside the ${modalConfig.class.modalGroup} element`);
@@ -108,13 +108,16 @@ else {
         displayLogMessage(errorList);
       }
       else {
+        modalItem.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive)
+
         // initialize modal-item activators
         modalItemActivatorList.forEach((activator) => {
           activator.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
 
-            activateModal(modalItem, modalItemId);
+            modalGroup.activeModal = modalItem;
+            activateModal();
           })
         });
 
@@ -124,42 +127,40 @@ else {
             e.preventDefault();
             e.stopPropagation();
 
-            deactivateModal(modalItem, modalItemId);
+            deactivateModal();
           })
         });
       }
      }
-
-  })
+  });
 
   // deactivate any modals if the modal-group overlay is clicked
   modalGroup.object.addEventListener('click', (e) => {
-    if (e.target === modalGroup.object && document.body.getAttribute(modalConfig.attribute.modalStatus) === modalConfig.status.activated) {
-      deactivateModal(null, null);
+    if (e.target === modalGroup.object && document.body.getAttribute(modalConfig.attribute.modalStatus) === modalConfig.status.active) {
+      deactivateModal();
     }
   })
 }
 
 
-const activateModal = (modalItem, modalItemId) => {
+const activateModal = () => {
   // display modal on the document flow
   modalGroup.object.style.display = modalGroup.display;
-  console.log(modalGroup.display);
+  modalGroup.activeModal.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.active)
 
   // add timeout to enable transition animation
   setTimeout(() => {
-    document.body.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.activated);
-  }, 10);
+    document.body.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.active);
+  }, 5);
 }
 
-const deactivateModal = (modalItem, modalItemId) => {
+const deactivateModal = () => {
   // transiton animation for modal default state (deactivated)
-  document.body.setAttribute(modalConfig.attribute.modalStatus, null);
+  document.body.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive);
 
   // hide modal from document flow after the transition animation
   setTimeout(() => {
     modalGroup.object.style.display = 'none';
-  }, modalGroup.transitionTiming);
+    modalGroup.activeModal.setAttribute(modalConfig.attribute.modalStatus, modalConfig.status.inactive)
+  }, modalGroup.transitionTiming - 200);
 }
-
-
